@@ -13,13 +13,18 @@
 <meta name="twitter:description" content="Real-time 3D gravitational N-body simulator with realistic planet sizes, orbiting moons and stellar evolution.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1832514774375359" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-1832514774375359">
+<meta property="og:image" content="https://universim.io/thumb.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
 <meta name="google-site-verification" content="CskOu2VRPj3SPlNnoxiZamumyYB5vuE_NAL1jjg2HGY" />
-<title>Universe Sim v6</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<title>Universe Sim</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#000;overflow:hidden;font-family:'Courier New',monospace;color:#bcd}
-canvas{display:block}
-#bar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(0,4,14,.92);backdrop-filter:blur(5px);border-bottom:1px solid rgba(60,120,255,.1);display:flex;align-items:center;gap:7px;padding:0 12px;z-index:100;pointer-events:auto;overflow:hidden}
+canvas{display:block;position:fixed;top:0;left:0;z-index:1}
+#bar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(0,4,14,.92);backdrop-filter:blur(5px);border-bottom:1px solid rgba(60,120,255,.1);display:flex;align-items:center;gap:7px;padding:0 12px;z-index:100;pointer-events:auto;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
 #bar h1{font-size:14px;letter-spacing:3px;color:#4af;font-weight:400;white-space:nowrap}
 .dv{width:1px;height:16px;background:rgba(80,140,255,.1);flex-shrink:0}
 .bg{display:flex;align-items:center;gap:4px}
@@ -31,7 +36,7 @@ canvas{display:block}
 .tb.on{background:rgba(40,200,120,.12);border-color:rgba(60,220,140,.3);color:#5db}
 .tb.wn{background:rgba(220,100,40,.1);border-color:rgba(255,140,60,.25);color:#fa8}
 .tb.wn.on{background:rgba(220,60,40,.2);border-color:rgba(255,80,60,.3);color:#f88}
-#lp{position:fixed;left:0;top:40px;bottom:28px;width:200px;background:rgba(0,4,14,.82);border-right:1px solid rgba(60,120,255,.07);overflow-y:auto;padding:7px 0;z-index:80}
+#lp{position:fixed;left:0;top:48px;bottom:34px;width:200px;background:rgba(0,4,14,.82);border-right:1px solid rgba(60,120,255,.07);overflow-y:auto;padding:7px 0;z-index:80;pointer-events:auto}
 #lp::-webkit-scrollbar{width:2px}#lp::-webkit-scrollbar-thumb{background:rgba(80,150,255,.14)}
 .lt{font-size:11px;letter-spacing:2px;color:#456;padding:0 12px 6px;text-transform:uppercase}
 .br{display:flex;align-items:center;gap:7px;padding:6px 12px;cursor:pointer;border-left:2px solid transparent;transition:all .07s}
@@ -42,7 +47,7 @@ canvas{display:block}
 .bn{font-size:12px;color:#9bc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bs{font-size:11px;color:#456}
 .ac{font-size:11px;color:#345;padding:5px 12px}
-#sp{position:fixed;right:0;top:48px;width:235px;background:rgba(0,4,14,.93);backdrop-filter:blur(6px);border-left:1px solid rgba(60,120,255,.1);padding:11px;z-index:80;display:none}
+#sp{position:fixed;right:0;top:48px;width:235px;background:rgba(0,4,14,.93);backdrop-filter:blur(6px);border-left:1px solid rgba(60,120,255,.1);padding:11px;z-index:80;display:none;pointer-events:auto}
 #sp .cx{position:absolute;top:7px;right:7px;width:17px;height:17px;background:rgba(255,60,60,.08);border:1px solid rgba(255,60,60,.14);border-radius:2px;color:#f77;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 #sp .cx:hover{background:rgba(255,60,60,.2)}
 #sN{font-size:14px;color:#6ef;letter-spacing:1px;margin-bottom:10px;padding-right:22px}
@@ -60,13 +65,13 @@ canvas{display:block}
 #tfPanel{margin-top:5px}
 #tfPanel select{width:100%;padding:7px 8px;margin-bottom:6px;background:rgba(0,10,30,.9);border:1px solid rgba(60,120,255,.14);color:#9bc;border-radius:2px;font:8px 'Courier New'}
 /* spawn modal */
-#sm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,5,18,.97);border:1px solid rgba(60,150,255,.2);border-radius:4px;padding:16px;z-index:200;display:none;min-width:258px;backdrop-filter:blur(10px)}
+#sm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,5,18,.97);border:1px solid rgba(60,150,255,.2);border-radius:4px;padding:16px;z-index:300;display:none;min-width:258px;backdrop-filter:blur(10px);pointer-events:auto}
 #sm h3{font-size:14px;color:#5af;letter-spacing:2px;margin-bottom:10px;font-weight:400}
 #sm label{font-size:11px;color:#456;letter-spacing:1px;display:block;margin-bottom:3px}
 #sm input,#sm select{width:100%;padding:7px 8px;margin-bottom:6px;background:rgba(0,10,30,.9);border:1px solid rgba(60,120,255,.15);color:#9bc;border-radius:2px;font:8px 'Courier New'}
 #sm select option{background:#000d20}
 .mb{display:flex;gap:6px;margin-top:3px}.mb .tb{flex:1;text-align:center;padding:6px}
-#ov{position:fixed;inset:0;z-index:199;display:none}
+#ov{position:fixed;inset:0;z-index:299;display:none;background:transparent}
 #spawnHint{position:fixed;top:58px;left:50%;transform:translateX(-50%);pointer-events:none;z-index:90;display:none;background:rgba(0,40,80,.8);border:1px solid rgba(60,200,255,.35);border-radius:3px;padding:5px 14px;font-size:12px;color:#5cf;letter-spacing:1px;white-space:nowrap}
 #cursorDot{position:fixed;width:14px;height:14px;border:1px solid rgba(60,220,255,.65);border-radius:50%;pointer-events:none;display:none;z-index:160;transform:translate(-50%,-50%)}
 #cursorDot::after{content:'';position:absolute;top:50%;left:50%;width:3px;height:3px;background:rgba(60,220,255,.9);border-radius:50%;transform:translate(-50%,-50%)}
@@ -82,7 +87,7 @@ canvas{display:block}
 #tp{position:fixed;pointer-events:none;display:none;background:rgba(0,6,20,.94);border:1px solid rgba(60,120,255,.17);padding:3px 7px;border-radius:2px;font-size:12px;color:#7af;white-space:nowrap;z-index:150}
 
 /* ── TUTORIAL POPUP ── */
-#tutOv{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:400;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(5px)}
+#tutOv{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(5px);pointer-events:auto}
 #tutBox{background:rgba(2,8,24,.98);border:1px solid rgba(60,150,255,.28);border-radius:6px;width:min(740px,95vw);max-height:90vh;overflow-y:auto;padding:30px 36px;position:relative;box-shadow:0 0 80px rgba(20,80,255,.12)}
 #tutBox::-webkit-scrollbar{width:3px}#tutBox::-webkit-scrollbar-thumb{background:rgba(80,150,255,.2)}
 #tutBox h2{font-size:18px;letter-spacing:4px;color:#4af;font-weight:400;margin-bottom:5px}
@@ -95,10 +100,20 @@ canvas{display:block}
 .titem .tk{font-size:11px;color:#3af;letter-spacing:1px;margin-bottom:4px;font-weight:600}
 .titem .tv{font-size:11px;color:#678;line-height:1.7}
 .kb{display:inline-block;background:rgba(40,80,160,.32);border:1px solid rgba(80,140,255,.28);border-radius:3px;padding:1px 6px;font-size:10px;color:#8af;margin:1px}
-#tutClose{margin-top:22px;width:100%;padding:12px;background:rgba(40,200,120,.1);border:1px solid rgba(60,220,140,.3);color:#5db;border-radius:4px;font:13px 'Courier New';letter-spacing:2px;cursor:pointer;transition:all .15s}
+#tutClose{margin-top:22px;width:100%;padding:12px;background:rgba(40,200,120,.1);border:1px solid rgba(60,220,140,.3);color:#5db;border-radius:4px;font:13px 'Courier New';letter-spacing:2px;cursor:pointer;transition:all .15s;position:relative;z-index:2}
 #tutClose:hover{background:rgba(40,200,120,.24)}
-#tutSkip{position:absolute;top:16px;right:18px;font-size:11px;color:#345;cursor:pointer;letter-spacing:1px;padding:4px 9px;border:1px solid rgba(80,120,255,.1);border-radius:3px}
+#tutSkip{position:absolute;top:16px;right:18px;font-size:11px;color:#345;cursor:pointer;letter-spacing:1px;padding:4px 9px;border:1px solid rgba(80,120,255,.1);border-radius:3px;z-index:2}
 #tutSkip:hover{color:#7af;border-color:rgba(80,120,255,.3)}
+
+/* ── LANGUAGE SWITCHER ── */
+#langSw{display:flex;align-items:center;gap:3px;flex-shrink:0}
+.lbtn{padding:3px 8px;background:transparent;border:1px solid rgba(60,120,255,.15);color:#456;border-radius:2px;font:11px 'Courier New';cursor:pointer;transition:all .1s;letter-spacing:.5px}
+.lbtn:hover{color:#7af;border-color:rgba(60,120,255,.35)}
+.lbtn.active{background:rgba(40,120,255,.15);border-color:rgba(60,150,255,.35);color:#7af}
+
+/* All UI above canvas */
+#bar,#bar *,#lp,#lp *,#sp,#sp *,#sm,#sm *,#tutOv,#tutOv *,#langSw,#langSw *{pointer-events:auto}
+#bar input[type=range]{pointer-events:auto;cursor:pointer}
 </style>
 </head>
 <body>
@@ -116,29 +131,29 @@ canvas{display:block}
       <h3>Câmera</h3>
       <div class="tgrid">
         <div class="titem"><div class="tk">MODO ORBITAR</div><div class="tv">Clique e arraste para girar. Scroll para zoom. Botão direito para panning.</div></div>
-        <div class="titem"><div class="tk">VOO LIVRE</div><div class="tv">Pressione <span class="kb">V</span> para entrar. Mouse aponta a câmera. <span class="kb">W</span><span class="kb">A</span><span class="kb">S</span><span class="kb">D</span> move, <span class="kb">Q</span><span class="kb">E</span> altura. <span class="kb">SHIFT</span> acelera 5×.</div></div>
-        <div class="titem"><div class="tk">FOCAR CORPO</div><div class="tv">Clique num planeta → <b>ORBITAR ESTE CORPO</b>. A câmera segue o corpo. Ou dê <b>duplo clique</b> na lista lateral.</div></div>
+        <div class="titem"><div class="tk" data-i18n="freeFly">FREE FLY</div><div class="tv">Pressione <span class="kb">V</span> para entrar. Mouse aponta a câmera. <span class="kb">W</span><span class="kb">A</span><span class="kb">S</span><span class="kb">D</span> move, <span class="kb">Q</span><span class="kb">E</span> altura. <span class="kb">SHIFT</span> acelera 5×.</div></div>
+        <div class="titem"><div class="tk">FOCAR CORPO</div><div class="tv">Clique num planeta → <b data-i18n="orbitBody">ORBIT THIS BODY</b>. A câmera segue o corpo. Ou dê <b>duplo clique</b> na lista lateral.</div></div>
         <div class="titem"><div class="tk">SELEÇÃO</div><div class="tv">Clique em qualquer corpo no espaço 3D ou na lista lateral. Uma linha branca aparece acima do corpo selecionado.</div></div>
       </div>
     </div>
     <div class="tsec">
       <h3>Corpos e Física</h3>
       <div class="tgrid">
-        <div class="titem"><div class="tk">EDITAR</div><div class="tv">Selecione um corpo → edite massa, raio e temperatura no painel direito → <b>SALVAR</b>.</div></div>
-        <div class="titem"><div class="tk">TRANSFORMAR</div><div class="tv">Selecione uma estrela → use <b>TRANSFORMAR EM</b> para criar Gigante Vermelha, Anã Branca, Buraco Negro, etc.</div></div>
-        <div class="titem"><div class="tk">LANÇAR</div><div class="tv">Defina Vx/Vy/Vz → <b>APLICAR VEL</b>. Use <b>ESTILINGAR ×2</b> para assistência gravitacional.</div></div>
+        <div class="titem"><div class="tk">EDITAR</div><div class="tv">Selecione um corpo → edite massa, raio e temperatura no painel direito → <b data-i18n="save">SAVE</b>.</div></div>
+        <div class="titem"><div class="tk" data-i18n="transform">TRANSFORM</div><div class="tv">Selecione uma estrela → use <b>TRANSFORMAR EM</b> para criar Gigante Vermelha, Anã Branca, Buraco Negro, etc.</div></div>
+        <div class="titem"><div class="tk">LANÇAR</div><div class="tv">Defina Vx/Vy/Vz → <b data-i18n="applyVel">APPLY VEL</b>. Use <b data-i18n="slingshot">SLINGSHOT ×2</b> para assistência gravitacional.</div></div>
         <div class="titem"><div class="tk">TEMPERATURA</div><div class="tv">Acima de 500°C: emissão vermelha. Acima de 4000°C: branca. Cada planeta converge para equilíbrio real com o sol.</div></div>
       </div>
     </div>
     <div class="tsec">
       <h3>Spawnar Novos Corpos</h3>
-      <div class="titem wide"><div class="tv">Clique <b>+ SPAWNAR</b>, configure tipo (planeta, estrela, anã branca, buraco negro, nebulosa…), depois <b>POSICIONAR NO MAPA</b> e clique em qualquer ponto do espaço. <span class="kb">ESC</span> cancela. Tipos: Rochoso · Gasoso · Gelo · Estrela · Gigante Vermelha · Anã Branca · Anã Marrom · Nêutrons · Buraco Negro · Lua · Asteroide · Cometa · Nebulosa.</div></div>
+      <div class="titem wide"><div class="tv">Clique <b data-i18n="spawn">+ SPAWN</b>, configure tipo (planeta, estrela, anã branca, buraco negro, nebulosa…), depois <b data-i18n="placeOnMap">PLACE ON MAP</b> e clique em qualquer ponto do espaço. <span class="kb">ESC</span> cancela. Tipos: Rochoso · Gasoso · Gelo · Estrela · Gigante Vermelha · Anã Branca · Anã Marrom · Nêutrons · Buraco Negro · Lua · Asteroide · Cometa · Nebulosa.</div></div>
     </div>
     <div class="tsec">
       <h3>Controles</h3>
       <div class="tgrid">
         <div class="titem"><div class="tk">TEMPO</div><div class="tv">Slider <b>T</b>: 0× a 30×. Afeta física, rastros E rotação dos planetas.</div></div>
-        <div class="titem"><div class="tk">RASTROS</div><div class="tv">Trilhas orbitais longas para ver forma de órbitas e perturbações gravitacionais.</div></div>
+        <div class="titem"><div class="tk" data-i18n="trails">TRAILS</div><div class="tv">Trilhas orbitais longas para ver forma de órbitas e perturbações gravitacionais.</div></div>
         <div class="titem"><div class="tk">GRADE GRAVITACIONAL</div><div class="tv">Mostra a curvatura do espaço-tempo. Corpos massivos deformam a grade profundamente.</div></div>
         <div class="titem"><div class="tk">COLISÕES</div><div class="tv">Planetas se fundem conservando momentum. Asteroides são absorvidos. O contador no rodapé registra o total.</div></div>
       </div>
@@ -148,22 +163,23 @@ canvas{display:block}
 </div>
 <div id="bar">
   <h1>UNIVERSE SIM</h1><div class="dv"></div>
+  <div id="langSw"><button class="lbtn active" onclick="setLang('en')">EN</button><button class="lbtn" onclick="setLang('pt')">PT</button><button class="lbtn" onclick="setLang('es')">ES</button></div><div class="dv"></div>
   <div class="bg"><span class="bl">T</span><input type="range" id="spS" min="0" max="30" step="0.1" value="3"><span id="spD">3.0x</span></div>
   <div class="dv"></div>
-  <button class="tb on" id="bOr" onclick="setOrbit()">ORBITAR</button>
-  <button class="tb" id="bFl" onclick="startFly()">VOO LIVRE</button>
+  <button class="tb on" id="bOr" onclick="setOrbit()" data-i18n="orbit">ORBIT</button>
+  <button class="tb" id="bFl" onclick="startFly()" data-i18n="freeFly">FREE FLY</button>
   <div class="dv"></div>
-  <button class="tb on" id="bTr" onclick="toggleTrails()">RASTROS</button>
-  <button class="tb" id="bGr" onclick="toggleGrid()">GRADE</button>
-  <button class="tb" id="bLb" onclick="toggleLabels()">LABELS</button>
+  <button class="tb on" id="bTr" onclick="toggleTrails()" data-i18n="trails">TRAILS</button>
+  <button class="tb" id="bGr" onclick="toggleGrid()" data-i18n="grid">GRID</button>
+  <button class="tb" id="bLb" onclick="toggleLabels()" data-i18n="labels">LABELS</button>
   <div class="dv"></div>
-  <button class="tb wn" id="bSp" onclick="openSpawnModal()">+ SPAWNAR</button>
-  <button class="tb" id="bPa" onclick="togglePause()">PAUSA</button>
-  <button class="tb" onclick="resetSim()">RESET</button>
+  <button class="tb wn" id="bSp" onclick="openSpawnModal()" data-i18n="spawn">+ SPAWN</button>
+  <button class="tb" id="bPa" onclick="togglePause()" data-i18n="pause">PAUSE</button>
+  <button class="tb" onclick="resetSim()" data-i18n="reset">RESET</button>
 </div>
 
 <div id="lp">
-  <div class="lt">Corpos</div>
+  <div class="lt" data-i18n="bodies">Bodies</div>
   <div id="bl2"></div>
   <div class="ac" id="aC"></div>
 </div>
@@ -171,98 +187,98 @@ canvas{display:block}
 <div id="sp">
   <div class="cx" onclick="closeSel()">x</div>
   <div id="sN">--</div>
-  <div class="sr"><span class="sk">Tipo</span><span class="sv" id="si-ty">--</span></div>
-  <div class="sr"><span class="sk">Massa</span><span class="sv" id="si-ms">--</span></div>
-  <div class="sr"><span class="sk">Temp</span><span class="sv" id="si-tp">--</span></div>
-  <div class="sr"><span class="sk">Vel</span><span class="sv" id="si-vl">--</span></div>
-  <div class="sr"><span class="sk">Dist. Sol</span><span class="sv" id="si-ds">--</span></div>
+  <div class="sr"><span class="sk" data-i18n="type">Type</span><span class="sv" id="si-ty">--</span></div>
+  <div class="sr"><span class="sk" data-i18n="mass">Mass</span><span class="sv" id="si-ms">--</span></div>
+  <div class="sr"><span class="sk" data-i18n="temp">Temp</span><span class="sv" id="si-tp">--</span></div>
+  <div class="sr"><span class="sk" data-i18n="vel">Vel</span><span class="sv" id="si-vl">--</span></div>
+  <div class="sr"><span class="sk" data-i18n="distSun">Dist. Sun</span><span class="sv" id="si-ds">--</span></div>
   <div class="sep"></div>
-  <span class="fl">MASSA (×10²⁴ kg)</span>
+  <span class="fl" data-i18n="massLabel">MASS (×10²⁴ kg)</span>
   <input class="fi" type="number" id="eM" step="0.001">
-  <span class="fl">RAIO VISUAL</span>
+  <span class="fl" data-i18n="radiusLabel">VISUAL RADIUS</span>
   <input class="fi" type="number" id="eS" step="0.5" min="0.05">
-  <span class="fl">TEMPERATURA (°C)</span>
+  <span class="fl" data-i18n="tempLabel">TEMPERATURE (°C)</span>
   <input class="fi" type="number" id="eT" step="10">
   <div class="pb">
-    <button class="tb" onclick="applyEdit()">SALVAR</button>
-    <button class="tb dbt" onclick="deleteBody()">EXCLUIR</button>
+    <button class="tb" onclick="applyEdit()" data-i18n="save">SAVE</button>
+    <button class="tb dbt" onclick="deleteBody()" data-i18n="delete">DELETE</button>
   </div>
   <div id="tfPanel">
     <div class="sep"></div>
-    <span class="fl" style="color:#8af">TRANSFORMAR EM</span>
+    <span class="fl" style="color:#8af" data-i18n="transformInto">TRANSFORM INTO</span>
     <select id="tfSel">
       <option value="">-- escolher --</option>
-      <option value="giant">Gigante Vermelha</option>
-      <option value="whitedwarf">Anã Branca</option>
-      <option value="neutron">Estrela de Nêutrons</option>
-      <option value="blackhole">Buraco Negro</option>
-      <option value="browndwarf">Anã Marrom</option>
+      <option value="giant" data-i18n="giant">Red Giant</option>
+      <option value="whitedwarf" data-i18n="whitedwarf">White Dwarf</option>
+      <option value="neutron" data-i18n="neutron">Neutron Star</option>
+      <option value="blackhole" data-i18n="blackhole">Black Hole</option>
+      <option value="browndwarf" data-i18n="browndwarf">Brown Dwarf</option>
     </select>
-    <button class="tb" style="width:100%;text-align:center" onclick="transformBody()">TRANSFORMAR</button>
+    <button class="tb" style="width:100%;text-align:center" onclick="transformBody()" data-i18n="transform">TRANSFORM</button>
   </div>
   <div class="sep"></div>
-  <span class="fl" style="color:#4a8">LANCAR</span>
+  <span class="fl" style="color:#4a8" data-i18n="launch">LAUNCH</span>
   <div class="vr">
     <input type="number" id="vx" placeholder="Vx" step="0.01" value="0">
     <input type="number" id="vy" placeholder="Vy" step="0.01" value="0">
     <input type="number" id="vz" placeholder="Vz" step="0.01" value="0">
   </div>
-  <button class="tb av" onclick="applyVel()">APLICAR VEL</button>
-  <button class="tb av" style="margin-top:3px;color:#fa8;border-color:rgba(255,160,50,.18)" onclick="slingshot()">ESTILINGAR ×2</button>
+  <button class="tb av" onclick="applyVel()" data-i18n="applyVel">APPLY VEL</button>
+  <button class="tb av" style="margin-top:3px;color:#fa8;border-color:rgba(255,160,50,.18)" onclick="slingshot()" data-i18n="slingshot">SLINGSHOT ×2</button>
   <div class="sep"></div>
-  <button class="tb" style="width:100%;text-align:center;color:#af8;border-color:rgba(100,200,80,.22)" onclick="focusBody()">ORBITAR ESTE CORPO</button>
+  <button class="tb" style="width:100%;text-align:center;color:#af8;border-color:rgba(100,200,80,.22)" onclick="focusBody()" data-i18n="orbitBody">ORBIT THIS BODY</button>
 </div>
 
 <div id="ov" onclick="closeSpawnModal()"></div>
 <div id="sm">
-  <h3 id="sm-h">SPAWNAR CORPO</h3>
-  <label>Tipo</label>
+  <h3 id="sm-h" data-i18n="spawnBody">SPAWN BODY</h3>
+  <label data-i18n="type">Type</label>
   <select id="sm-t" onchange="presetType()">
-    <optgroup label="Planetas">
-      <option value="rocky">Planeta Rochoso</option>
-      <option value="gas">Planeta Gasoso</option>
-      <option value="ice">Planeta de Gelo</option>
+    <optgroup data-i18n-label="planets" label="Planets">
+      <option value="rocky" data-i18n="rocky">Rocky Planet</option>
+      <option value="gas" data-i18n="gaseous">Gas Planet</option>
+      <option value="ice" data-i18n="iceplanet">Ice Planet</option>
     </optgroup>
-    <optgroup label="Estrelas">
-      <option value="sun">Estrela Solar</option>
-      <option value="giant">Gigante Vermelha</option>
-      <option value="whitedwarf">Anã Branca</option>
-      <option value="browndwarf">Anã Marrom</option>
-      <option value="neutron">Estrela de Nêutrons</option>
-      <option value="blackhole">Buraco Negro</option>
+    <optgroup data-i18n-label="stars" label="Stars">
+      <option value="sun" data-i18n="sunStar">Solar Star</option>
+      <option value="giant" data-i18n="giant">Red Giant</option>
+      <option value="whitedwarf" data-i18n="whitedwarf">White Dwarf</option>
+      <option value="browndwarf" data-i18n="browndwarf">Brown Dwarf</option>
+      <option value="neutron" data-i18n="neutron">Neutron Star</option>
+      <option value="blackhole" data-i18n="blackhole">Black Hole</option>
     </optgroup>
-    <optgroup label="Outros">
-      <option value="moon">Lua</option>
-      <option value="asteroid">Asteroide</option>
-      <option value="comet">Cometa</option>
-      <option value="nebula">Nebulosa</option>
+    <optgroup data-i18n-label="others" label="Others">
+      <option value="moon" data-i18n="moon">Moon</option>
+      <option value="asteroid" data-i18n="asteroid">Asteroid</option>
+      <option value="comet" data-i18n="comet">Comet</option>
+      <option value="nebula" data-i18n="nebula">Nebula</option>
     </optgroup>
   </select>
-  <label>Nome</label><input type="text" id="sm-n" value="Novo Corpo">
-  <label>Massa (×10²⁴ kg)</label><input type="number" id="sm-m" step="0.1">
-  <label>Raio Visual</label><input type="number" id="sm-r" step="0.5" min="0.1">
-  <label>Temperatura (°C)</label><input type="number" id="sm-te">
-  <label>Cor (hex)</label><input type="text" id="sm-c" value="#3366ff">
-  <label>Velocidade Orbital</label>
+  <label data-i18n="name">Name</label><input type="text" id="sm-n" value="Novo Corpo">
+  <label data-i18n="massLabel">Mass (×10²⁴ kg)</label><input type="number" id="sm-m" step="0.1">
+  <label data-i18n="radiusLabel">Visual Radius</label><input type="number" id="sm-r" step="0.5" min="0.1">
+  <label data-i18n="tempLabel">Temperature (°C)</label><input type="number" id="sm-te">
+  <label data-i18n="colorLabel">Color (hex)</label><input type="text" id="sm-c" value="#3366ff">
+  <label data-i18n="orbitalVel">Orbital Velocity</label>
   <select id="sm-orb">
-    <option value="auto">Auto — orbitar o sol</option>
-    <option value="free">Manual — definir depois</option>
+    <option value="auto" data-i18n="autoOrbit">Auto — orbit the sun</option>
+    <option value="free" data-i18n="manualOrbit">Manual — set later</option>
   </select>
   <div class="mb">
-    <button class="tb" onclick="enterPlaceMode()" style="color:#5db;border-color:rgba(50,200,120,.24)">POSICIONAR NO MAPA</button>
-    <button class="tb dbt" onclick="closeSpawnModal()">CANCELAR</button>
+    <button class="tb" onclick="enterPlaceMode()" style="color:#5db;border-color:rgba(50,200,120,.24)" data-i18n="placeOnMap">PLACE ON MAP</button>
+    <button class="tb dbt" onclick="closeSpawnModal()" data-i18n="cancel">CANCEL</button>
   </div>
 </div>
 
-<div id="spawnHint">CLIQUE NO ESPACO PARA POSICIONAR · ESC cancela</div>
+<div id="spawnHint" data-i18n="spawnHintTxt">CLICK IN SPACE TO PLACE · ESC cancels</div>
 <div id="cursorDot"></div>
 <div id="sb">
-  <div class="st"><span class="sl2">Corpos</span><span class="sv2" id="stB">0</span></div>
-  <div class="st"><span class="sl2">Tempo</span><span class="sv2" id="stT">0 d</span></div>
-  <div class="st"><span class="sl2">Colisoes</span><span class="sv2" id="stC">0</span></div>
+  <div class="st"><span class="sl2" data-i18n="bodies">Bodies</span><span class="sv2" id="stB">0</span></div>
+  <div class="st"><span class="sl2" data-i18n="time">Time</span><span class="sv2" id="stT">0 d</span></div>
+  <div class="st"><span class="sl2" data-i18n="collisions">Collisions</span><span class="sv2" id="stC">0</span></div>
   <div class="st"><span class="sl2">FPS</span><span class="sv2" id="stF">--</span></div>
 </div>
-<div id="hnt"><b>V</b> Voo livre &nbsp;<b>WASD</b> Mover<br><b>Q/E</b> Altitude &nbsp;<b>SHIFT</b> Rapido</div>
+<div id="hnt"><span data-i18n="hintTxt"><b>V</b> Free fly &nbsp;<b>WASD</b> Move<br><b>Q/E</b> Altitude &nbsp;<b>SHIFT</b> Fast</span></div>
 <div id="xh"></div>
 <div id="tp"></div>
 
@@ -451,6 +467,225 @@ function deformGrid(bs){
   for(let i=0;i<pos.count;i++){const x=pos.getX(i),z=pos.getZ(i);let dy=0;for(const bj of heavy){const dx=x-bj.pos.x,dz=z-bj.pos.z,d2=dx*dx+dz*dz+5000;dy-=Math.min(3000,bj.mass*.01/d2*1e9);}pos.setY(i,Math.max(-8000,_origY[i]+dy));}
   pos.needsUpdate=true;
 }
+
+// ══════════════════════════════════════════════════════════
+//  i18n  — EN (default) / PT / ES
+// ══════════════════════════════════════════════════════════
+const LANGS = {
+  en:{
+    orbit:'ORBIT', freeFly:'FREE FLY', trails:'TRAILS', grid:'GRID', labels:'LABELS',
+    spawn:'+ SPAWN', pause:'PAUSE', resume:'RESUME', reset:'RESET',
+    bodies:'Bodies', time:'Time', collisions:'Collisions',
+    type:'Type', mass:'Mass', temp:'Temp', vel:'Vel', distSun:'Dist. Sun',
+    massLabel:'MASS (×10²⁴ kg)', radiusLabel:'VISUAL RADIUS', tempLabel:'TEMPERATURE (°C)',
+    colorLabel:'Color (hex)', orbitalVel:'Orbital Velocity',
+    save:'SAVE', delete:'DELETE', transformInto:'TRANSFORM INTO', transform:'TRANSFORM',
+    launch:'LAUNCH', applyVel:'APPLY VEL', slingshot:'SLINGSHOT ×2', orbitBody:'ORBIT THIS BODY',
+    giant:'Red Giant', whitedwarf:'White Dwarf', neutron:'Neutron Star',
+    blackhole:'Black Hole', browndwarf:'Brown Dwarf',
+    spawnBody:'SPAWN BODY', name:'Name',
+    planets:'Planets', stars:'Stars', others:'Others',
+    rocky:'Rocky Planet', gaseous:'Gas Planet', iceplanet:'Ice Planet', sunStar:'Solar Star',
+    moon:'Moon', asteroid:'Asteroid', comet:'Comet', nebula:'Nebula',
+    autoOrbit:'Auto — orbit the sun', manualOrbit:'Manual — set later',
+    placeOnMap:'PLACE ON MAP', cancel:'CANCEL',
+    spawnHintTxt:'CLICK IN SPACE TO PLACE · ESC cancels',
+    hintTxt:'<b>V</b> Free fly &nbsp;<b>WASD</b> Move<br><b>Q/E</b> Altitude &nbsp;<b>SHIFT</b> Fast',
+    // Tutorial
+    tutTitle:'UNIVERSE SIMULATOR',
+    tutSub:'INTERACTIVE N-BODY GRAVITATIONAL SIMULATOR',
+    tutAbout:'About',
+    tutAboutTxt:'Real-time N-body physics simulation with true size and distance proportions. All bodies exert gravity on each other. Moons orbit their planets with Keplerian velocities derived from the Hill sphere. Saturn and Uranus have rings with independently orbiting particles. Planet temperatures converge to real thermodynamic equilibrium based on stellar luminosity and distance.',
+    tutCamera:'Camera',
+    tutOrbitMode:'ORBIT MODE', tutOrbitDesc:'Click and drag to rotate. Scroll to zoom. Right-click to pan.',
+    tutFreeFly:'FREE FLY', tutFreeFlyDesc:'Press <span class="kb">V</span> to enter. Mouse aims the camera. <span class="kb">W</span><span class="kb">A</span><span class="kb">S</span><span class="kb">D</span> move, <span class="kb">Q</span><span class="kb">E</span> altitude. <span class="kb">SHIFT</span> 5× speed.',
+    tutFocus:'FOCUS BODY', tutFocusDesc:'Select a body → click <b>ORBIT THIS BODY</b>. Camera follows it. Or <b>double-click</b> in the sidebar.',
+    tutSelect:'SELECTION', tutSelectDesc:'Click any body in 3D space or the sidebar. A white pulsing line appears above the selected body.',
+    tutBodies:'Bodies & Physics',
+    tutEdit:'EDIT', tutEditDesc:'Select a body → edit mass, radius and temperature in the right panel → SAVE.',
+    tutTransform:'TRANSFORM', tutTransformDesc:'Select a star → use TRANSFORM INTO to create Red Giant, White Dwarf, Black Hole, etc.',
+    tutLaunch:'LAUNCH', tutLaunchDesc:'Set Vx/Vy/Vz → APPLY VEL. Use SLINGSHOT ×2 for gravitational assist.',
+    tutTempDesc:'Above 500°C: red emission. Above 4000°C: white. Each planet converges to real equilibrium with the star.',
+    tutSpawn:'Spawn New Bodies',
+    tutSpawnDesc:'Click <b>+ SPAWN</b>, configure type (planet, star, white dwarf, black hole, nebula…), then <b>PLACE ON MAP</b> and click anywhere in space. <span class="kb">ESC</span> cancels.',
+    tutControls:'Controls',
+    tutTimeDesc:'T slider: 0× to 30×. Affects physics, trails AND planet rotation.',
+    tutTrailsDesc:'Long orbital trails to visualize orbit shapes and gravitational perturbations.',
+    tutGridDesc:'Shows spacetime curvature. Massive bodies deform the grid deeply.',
+    tutCollDesc:'Planets merge conserving momentum. Asteroids are absorbed. Counter in the footer.',
+    tutStart:'GOT IT — START SIMULATION',
+    tutClose:'CLOSE ×',
+    // dynamic
+    fragment:'Frag', astKbo:'ast/KBO',
+    typeNames:{rocky:'Rocky Planet',gas:'Gas Planet',ice:'Ice Planet',sun:'Star',giant:'Red Giant',whitedwarf:'White Dwarf',browndwarf:'Brown Dwarf',neutron:'Neutron Star',blackhole:'Black Hole',moon:'Moon',asteroid:'Asteroid',comet:'Comet',nebula:'Nebula'},
+  },
+  pt:{
+    orbit:'ORBITAR', freeFly:'VOO LIVRE', trails:'RASTROS', grid:'GRADE', labels:'LABELS',
+    spawn:'+ SPAWNAR', pause:'PAUSA', resume:'RETOMAR', reset:'RESET',
+    bodies:'Corpos', time:'Tempo', collisions:'Colisoes',
+    type:'Tipo', mass:'Massa', temp:'Temp', vel:'Vel', distSun:'Dist. Sol',
+    massLabel:'MASSA (×10²⁴ kg)', radiusLabel:'RAIO VISUAL', tempLabel:'TEMPERATURA (°C)',
+    colorLabel:'Cor (hex)', orbitalVel:'Velocidade Orbital',
+    save:'SALVAR', delete:'EXCLUIR', transformInto:'TRANSFORMAR EM', transform:'TRANSFORMAR',
+    launch:'LANCAR', applyVel:'APLICAR VEL', slingshot:'ESTILINGAR ×2', orbitBody:'ORBITAR ESTE CORPO',
+    giant:'Gigante Vermelha', whitedwarf:'Anã Branca', neutron:'Estrela de Nêutrons',
+    blackhole:'Buraco Negro', browndwarf:'Anã Marrom',
+    spawnBody:'SPAWNAR CORPO', name:'Nome',
+    planets:'Planetas', stars:'Estrelas', others:'Outros',
+    rocky:'Planeta Rochoso', gaseous:'Planeta Gasoso', iceplanet:'Planeta de Gelo', sunStar:'Estrela Solar',
+    moon:'Lua', asteroid:'Asteroide', comet:'Cometa', nebula:'Nebulosa',
+    autoOrbit:'Auto — orbitar o sol', manualOrbit:'Manual — definir depois',
+    placeOnMap:'POSICIONAR NO MAPA', cancel:'CANCELAR',
+    spawnHintTxt:'CLIQUE NO ESPAÇO PARA POSICIONAR · ESC cancela',
+    hintTxt:'<b>V</b> Voo livre &nbsp;<b>WASD</b> Mover<br><b>Q/E</b> Altitude &nbsp;<b>SHIFT</b> Rápido',
+    tutTitle:'SIMULADOR DE UNIVERSO',
+    tutSub:'SIMULADOR GRAVITACIONAL N-CORPOS INTERATIVO',
+    tutAbout:'Sobre o Projeto',
+    tutAboutTxt:'Simulação física N-body em tempo real com proporções reais de tamanho e distância. Todos os corpos exercem gravidade entre si. As luas orbitam com velocidades keplerianas pela esfera de Hill. Saturno e Urano têm anéis com partículas em órbita independente. A temperatura dos planetas converge para o equilíbrio termodinâmico real.',
+    tutCamera:'Câmera',
+    tutOrbitMode:'MODO ORBITAR', tutOrbitDesc:'Clique e arraste para girar. Scroll para zoom. Botão direito para panning.',
+    tutFreeFly:'VOO LIVRE', tutFreeFlyDesc:'Pressione <span class="kb">V</span> para entrar. Mouse aponta a câmera. <span class="kb">W</span><span class="kb">A</span><span class="kb">S</span><span class="kb">D</span> move, <span class="kb">Q</span><span class="kb">E</span> altura. <span class="kb">SHIFT</span> acelera 5×.',
+    tutFocus:'FOCAR CORPO', tutFocusDesc:'Clique num planeta → <b>ORBITAR ESTE CORPO</b>. A câmera segue o corpo. Ou dê <b>duplo clique</b> na lista lateral.',
+    tutSelect:'SELEÇÃO', tutSelectDesc:'Clique em qualquer corpo no espaço 3D ou na lista lateral. Uma linha branca pulsante aparece acima do corpo selecionado.',
+    tutBodies:'Corpos e Física',
+    tutEdit:'EDITAR', tutEditDesc:'Selecione um corpo → edite massa, raio e temperatura no painel direito → SALVAR.',
+    tutTransform:'TRANSFORMAR', tutTransformDesc:'Selecione uma estrela → use TRANSFORMAR EM para criar Gigante Vermelha, Anã Branca, Buraco Negro, etc.',
+    tutLaunch:'LANÇAR', tutLaunchDesc:'Defina Vx/Vy/Vz → APLICAR VEL. Use ESTILINGAR ×2 para assistência gravitacional.',
+    tutTempDesc:'Acima de 500°C: emissão vermelha. Acima de 4000°C: branca. Cada planeta converge para equilíbrio real com o sol.',
+    tutSpawn:'Spawnar Novos Corpos',
+    tutSpawnDesc:'Clique <b>+ SPAWNAR</b>, configure tipo (planeta, estrela, anã branca, buraco negro, nebulosa…), depois <b>POSICIONAR NO MAPA</b> e clique em qualquer ponto do espaço. <span class="kb">ESC</span> cancela.',
+    tutControls:'Controles',
+    tutTimeDesc:'Slider T: 0× a 30×. Afeta física, rastros E rotação dos planetas.',
+    tutTrailsDesc:'Trilhas orbitais longas para ver forma de órbitas e perturbações gravitacionais.',
+    tutGridDesc:'Mostra a curvatura do espaço-tempo. Corpos massivos deformam a grade profundamente.',
+    tutCollDesc:'Planetas se fundem conservando momentum. Asteroides são absorvidos. O contador no rodapé registra o total.',
+    tutStart:'ENTENDIDO — INICIAR SIMULAÇÃO',
+    tutClose:'FECHAR ×',
+    fragment:'Frag', astKbo:'ast/KBO',
+    typeNames:{rocky:'Planeta Rochoso',gas:'Planeta Gasoso',ice:'Planeta de Gelo',sun:'Estrela',giant:'Gigante Vermelha',whitedwarf:'Anã Branca',browndwarf:'Anã Marrom',neutron:'Estrela de Nêutrons',blackhole:'Buraco Negro',moon:'Lua',asteroid:'Asteroide',comet:'Cometa',nebula:'Nebulosa'},
+  },
+  es:{
+    orbit:'ORBITAR', freeFly:'VUELO LIBRE', trails:'RASTROS', grid:'MALLA', labels:'LABELS',
+    spawn:'+ CREAR', pause:'PAUSA', resume:'REANUDAR', reset:'RESET',
+    bodies:'Cuerpos', time:'Tiempo', collisions:'Colisiones',
+    type:'Tipo', mass:'Masa', temp:'Temp', vel:'Vel', distSun:'Dist. Sol',
+    massLabel:'MASA (×10²⁴ kg)', radiusLabel:'RADIO VISUAL', tempLabel:'TEMPERATURA (°C)',
+    colorLabel:'Color (hex)', orbitalVel:'Velocidad Orbital',
+    save:'GUARDAR', delete:'ELIMINAR', transformInto:'TRANSFORMAR EN', transform:'TRANSFORMAR',
+    launch:'LANZAR', applyVel:'APLICAR VEL', slingshot:'HONDA ×2', orbitBody:'ORBITAR ESTE CUERPO',
+    giant:'Gigante Roja', whitedwarf:'Enana Blanca', neutron:'Estrella de Neutrones',
+    blackhole:'Agujero Negro', browndwarf:'Enana Marrón',
+    spawnBody:'CREAR CUERPO', name:'Nombre',
+    planets:'Planetas', stars:'Estrellas', others:'Otros',
+    rocky:'Planeta Rocoso', gaseous:'Planeta Gaseoso', iceplanet:'Planeta de Hielo', sunStar:'Estrella Solar',
+    moon:'Luna', asteroid:'Asteroide', comet:'Cometa', nebula:'Nebulosa',
+    autoOrbit:'Auto — orbitar el sol', manualOrbit:'Manual — definir después',
+    placeOnMap:'COLOCAR EN MAPA', cancel:'CANCELAR',
+    spawnHintTxt:'CLIC EN EL ESPACIO PARA COLOCAR · ESC cancela',
+    hintTxt:'<b>V</b> Vuelo libre &nbsp;<b>WASD</b> Mover<br><b>Q/E</b> Altura &nbsp;<b>SHIFT</b> Rápido',
+    tutTitle:'SIMULADOR DE UNIVERSO',
+    tutSub:'SIMULADOR GRAVITACIONAL N-CUERPOS INTERACTIVO',
+    tutAbout:'Sobre el Proyecto',
+    tutAboutTxt:'Simulación física N-body en tiempo real con proporciones reales de tamaño y distancia. Todos los cuerpos ejercen gravedad entre sí. Las lunas orbitan con velocidades keplerianas según la esfera de Hill. Saturno y Urano tienen anillos con partículas en órbita independiente.',
+    tutCamera:'Cámara',
+    tutOrbitMode:'MODO ORBITAR', tutOrbitDesc:'Clic y arrastrar para rotar. Scroll para zoom. Botón derecho para paneo.',
+    tutFreeFly:'VUELO LIBRE', tutFreeFlyDesc:'Pulsa <span class="kb">V</span> para entrar. El ratón apunta la cámara. <span class="kb">W</span><span class="kb">A</span><span class="kb">S</span><span class="kb">D</span> mueve, <span class="kb">Q</span><span class="kb">E</span> altura. <span class="kb">SHIFT</span> 5× velocidad.',
+    tutFocus:'ENFOCAR CUERPO', tutFocusDesc:'Selecciona un cuerpo → clic en <b>ORBITAR ESTE CUERPO</b>. La cámara lo sigue. O <b>doble clic</b> en la lista lateral.',
+    tutSelect:'SELECCIÓN', tutSelectDesc:'Clic en cualquier cuerpo en el espacio 3D o en la lista lateral. Aparece una línea blanca pulsante encima del cuerpo seleccionado.',
+    tutBodies:'Cuerpos y Física',
+    tutEdit:'EDITAR', tutEditDesc:'Selecciona un cuerpo → edita masa, radio y temperatura en el panel derecho → GUARDAR.',
+    tutTransform:'TRANSFORMAR', tutTransformDesc:'Selecciona una estrella → usa TRANSFORMAR EN para crear Gigante Roja, Enana Blanca, Agujero Negro, etc.',
+    tutLaunch:'LANZAR', tutLaunchDesc:'Define Vx/Vy/Vz → APLICAR VEL. Usa HONDA ×2 para asistencia gravitacional.',
+    tutTempDesc:'Por encima de 500°C: emisión roja. Por encima de 4000°C: blanca. Cada planeta converge al equilibrio real con la estrella.',
+    tutSpawn:'Crear Nuevos Cuerpos',
+    tutSpawnDesc:'Clic en <b>+ CREAR</b>, configura el tipo (planeta, estrella, enana blanca, agujero negro, nebulosa…), luego <b>COLOCAR EN MAPA</b> y clic en cualquier punto del espacio. <span class="kb">ESC</span> cancela.',
+    tutControls:'Controles',
+    tutTimeDesc:'Deslizador T: 0× a 30×. Afecta física, rastros Y rotación de planetas.',
+    tutTrailsDesc:'Rastros orbitales largos para visualizar formas de órbita y perturbaciones gravitacionales.',
+    tutGridDesc:'Muestra la curvatura del espacio-tiempo. Los cuerpos masivos deforman la malla profundamente.',
+    tutCollDesc:'Los planetas se fusionan conservando el momento. Los asteroides son absorbidos. El contador en el pie registra el total.',
+    tutStart:'ENTENDIDO — INICIAR SIMULACIÓN',
+    tutClose:'CERRAR ×',
+    fragment:'Frag', astKbo:'ast/KBO',
+    typeNames:{rocky:'Planeta Rocoso',gas:'Planeta Gaseoso',ice:'Planeta de Hielo',sun:'Estrella',giant:'Gigante Roja',whitedwarf:'Enana Blanca',browndwarf:'Enana Marrón',neutron:'Estrella de Neutrones',blackhole:'Agujero Negro',moon:'Luna',asteroid:'Asteroide',comet:'Cometa',nebula:'Nebulosa'},
+  }
+};
+
+let _lang='en';
+window.setLang=function setLang(l){
+  _lang=l;
+  try{localStorage.setItem('usim_lang',l);}catch(e){}
+  const T=LANGS[l];
+  // Update all data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(T[k]!==undefined) el.innerHTML=T[k];
+  });
+  // Update optgroup labels
+  document.querySelectorAll('[data-i18n-label]').forEach(el=>{
+    const k=el.getAttribute('data-i18n-label');
+    if(T[k]!==undefined) el.label=T[k];
+  });
+  // Update pause button specially
+  const bPa=document.getElementById('bPa');
+  if(bPa) bPa.innerHTML=paused?(T.resume||T.pause):T.pause;
+  // Update lang buttons
+  document.querySelectorAll('.lbtn').forEach(b=>b.classList.toggle('active',b.textContent===l.toUpperCase()));
+  // html lang attr
+  document.documentElement.lang=l==='pt'?'pt-BR':l==='es'?'es':l;
+  // Rebuild tutorial text
+  _rebuildTutorial(T);
+  // Update TYPE_PRE names
+  Object.keys(TYPE_PRE).forEach(k=>{if(T.typeNames&&T.typeNames[k])TYPE_PRE[k].n=T.typeNames[k];});
+  // Refresh list to update type labels if open
+  _listDirty=true;
+}
+
+function _rebuildTutorial(T){
+  const b=document.getElementById('tutBox');if(!b)return;
+  b.querySelector('#tutSkip').innerHTML=T.tutClose||'CLOSE ×';
+  b.querySelector('h2').innerHTML=T.tutTitle||'UNIVERSE SIMULATOR';
+  b.querySelector('.tsub').innerHTML=T.tutSub||'';
+  const secs=b.querySelectorAll('.tsec');
+  // sec0: About
+  secs[0].querySelector('h3').innerHTML=T.tutAbout||'About';
+  secs[0].querySelector('.tv').innerHTML=T.tutAboutTxt||'';
+  // sec1: Camera
+  secs[1].querySelector('h3').innerHTML=T.tutCamera||'Camera';
+  const c1=secs[1].querySelectorAll('.titem');
+  c1[0].querySelector('.tk').innerHTML=T.tutOrbitMode||'';c1[0].querySelector('.tv').innerHTML=T.tutOrbitDesc||'';
+  c1[1].querySelector('.tk').innerHTML=T.tutFreeFly||'';c1[1].querySelector('.tv').innerHTML=T.tutFreeFlyDesc||'';
+  c1[2].querySelector('.tk').innerHTML=T.tutFocus||'';c1[2].querySelector('.tv').innerHTML=T.tutFocusDesc||'';
+  c1[3].querySelector('.tk').innerHTML=T.tutSelect||'';c1[3].querySelector('.tv').innerHTML=T.tutSelectDesc||'';
+  // sec2: Bodies
+  secs[2].querySelector('h3').innerHTML=T.tutBodies||'Bodies & Physics';
+  const c2=secs[2].querySelectorAll('.titem');
+  c2[0].querySelector('.tk').innerHTML=T.tutEdit||'';c2[0].querySelector('.tv').innerHTML=T.tutEditDesc||'';
+  c2[1].querySelector('.tk').innerHTML=T.tutTransform||'';c2[1].querySelector('.tv').innerHTML=T.tutTransformDesc||'';
+  c2[2].querySelector('.tk').innerHTML=T.tutLaunch||'';c2[2].querySelector('.tv').innerHTML=T.tutLaunchDesc||'';
+  c2[3].querySelector('.tk').innerHTML=T.tutTempDesc||'';
+  // sec3: Spawn
+  secs[3].querySelector('h3').innerHTML=T.tutSpawn||'Spawn New Bodies';
+  secs[3].querySelector('.tv').innerHTML=T.tutSpawnDesc||'';
+  // sec4: Controls
+  secs[4].querySelector('h3').innerHTML=T.tutControls||'Controls';
+  const c4=secs[4].querySelectorAll('.titem');
+  c4[0].querySelector('.tv').innerHTML=T.tutTimeDesc||'';
+  c4[1].querySelector('.tv').innerHTML=T.tutTrailsDesc||'';
+  c4[2].querySelector('.tv').innerHTML=T.tutGridDesc||'';
+  c4[3].querySelector('.tv').innerHTML=T.tutCollDesc||'';
+  document.getElementById('tutClose').innerHTML=T.tutStart||'';
+}
+
+// Detect language: localStorage → browser → default EN
+(function(){
+  let saved;
+  try{saved=localStorage.getItem('usim_lang');}catch(e){}
+  const br=(navigator.language||'en').toLowerCase();
+  const auto=saved||(br.startsWith('pt')?'pt':br.startsWith('es')?'es':'en');
+  // Apply after DOM ready — called at end of script
+  window._initLang=auto;
+})();
 
 // ══════════════════════════════════════════════════════════
 //  TEMPERATURE
@@ -902,7 +1137,7 @@ function spawnEjecta(orig,cnt){
   const sun=bodies.find(b=>b.isStar);
   for(let k=0;k<cnt;k++){
     const dir=new THREE.Vector3().randomDirection(),sz=.3*BOOST+Math.random()*.4*BOOST;
-    const nb=new Body({n:'Frag',ty:'asteroid',m:8e-7+Math.random()*8e-6,r:sz,c:0x887755,t:orig.temperature*.25,tx:'asteroid',
+    const nb=new Body({n:(LANGS[_lang]&&LANGS[_lang].fragment)||'Frag',ty:'asteroid',m:8e-7+Math.random()*8e-6,r:sz,c:0x887755,t:orig.temperature*.25,tx:'asteroid',
       x:orig.pos.x+dir.x*(orig._visR+sz+1),y:orig.pos.y+dir.y*2,z:orig.pos.z+dir.z*(orig._visR+sz+1)});
     nb.vel.copy(orig.vel).addScaledVector(dir,.8+Math.random()*1.8);
     if(sun)nb.vel.lerp(orbVel(nb.pos,sun.pos,sun.mass),.18);
@@ -969,7 +1204,7 @@ function refreshList(){
     el.appendChild(row);
   });
   const an=bodies.filter(b=>b.isAst&&!b.removed).length;
-  document.getElementById('aC').textContent=`+${an} ast/KBO`;
+  document.getElementById('aC').textContent=`+${an} ${LANGS[_lang]&&LANGS[_lang].astKbo?LANGS[_lang].astKbo:'ast/KBO'}`;
   document.getElementById('stB').textContent=bodies.filter(b=>!b.removed).length;
 }
 
@@ -999,6 +1234,8 @@ window.closeSel=()=>{if(selBody)selBody.hideIndicator();selBody=null;_listDirty=
 
 // Close on canvas click (empty space)
 ren.domElement.addEventListener('mousedown',e=>{
+  const _tov=document.getElementById('tutOv');
+  if(_tov&&_tov.style.display!=='none'&&_tov.style.display!=='')return;
   if(!selBody||freeFly||spawnMode)return;
   const m=new THREE.Vector2((e.clientX/innerWidth)*2-1,-(e.clientY/innerHeight)*2+1);
   const r2=new THREE.Raycaster();r2.setFromCamera(m,cam);
@@ -1101,6 +1338,9 @@ document.addEventListener('mousemove',e=>{
 
 ren.domElement.addEventListener('click',e=>{
   if(freeFly||e.target!==ren.domElement)return;
+  const tutOpen=document.getElementById('tutOv').style.display!=='none'&&document.getElementById('tutOv').style.display!=='';
+  const smOpen=document.getElementById('sm').style.display!=='none';
+  if(tutOpen||smOpen)return;
   _spawnV.x=(e.clientX/innerWidth)*2-1;_spawnV.y=-(e.clientY/innerHeight)*2+1;
   _spawnRay.setFromCamera(_spawnV,cam);
 
@@ -1144,7 +1384,7 @@ ren.domElement.addEventListener('mousemove',e=>{
 window.toggleTrails=()=>{showTr=!showTr;document.getElementById('bTr').classList.toggle('on',showTr);if(!showTr)bodies.forEach(b=>{if(b.trail){b._tLen=0;b._tHead=0;b.trail.geometry.setDrawRange(0,0);}});};
 window.toggleGrid=()=>{showGr=!showGr;gridMesh.visible=showGr;document.getElementById('bGr').classList.toggle('on',showGr);};
 window.toggleLabels=()=>{showLb=!showLb;document.getElementById('bLb').classList.toggle('on',showLb);};
-window.togglePause=()=>{paused=!paused;document.getElementById('bPa').textContent=paused?'RETOMAR':'PAUSA';document.getElementById('bPa').classList.toggle('on',paused);};
+window.togglePause=()=>{paused=!paused;document.getElementById('bPa').textContent=paused?(LANGS[_lang].resume||'RESUME'):(LANGS[_lang].pause||'PAUSE');document.getElementById('bPa').classList.toggle('on',paused);};
 window.resetSim=()=>{selBody=null;spawnMode=false;_pendingSpawn=null;_followTarget=null;document.getElementById('sp').style.display='none';exitPlaceMode();buildSolarSystem();};
 document.getElementById('spS').oninput=function(){tMult=parseFloat(this.value);document.getElementById('spD').textContent=tMult.toFixed(1)+'x';};
 
@@ -1175,6 +1415,8 @@ const SUBS=3;
 let fpsT=0,uiT=0,gridT=0,tempT=0,frameN=0;
 
 buildSolarSystem();
+// Init language after DOM + sim is ready
+setLang(window._initLang||'en');
 document.getElementById('bTr').classList.add('on');
 document.getElementById('spD').textContent='3.0x';
 
@@ -1253,8 +1495,9 @@ function animate(){
 }
 
 window.addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight);});
+
 // ── TUTORIAL ──
-window.closeTut=()=>{document.getElementById('tutOv').style.display='none';};
+window.closeTut=()=>{const _ov=document.getElementById('tutOv');if(_ov){_ov.style.display='none';_ov.style.pointerEvents='none';}try{localStorage.setItem('usim_lang',_lang);}catch(e){}};
 try{if(localStorage.getItem('usim_seen'))window.closeTut();}catch(e){}
 document.getElementById('tutClose').addEventListener('click',()=>{try{localStorage.setItem('usim_seen','1');}catch(e){}window.closeTut();});
 document.getElementById('tutSkip').addEventListener('click',()=>{try{localStorage.setItem('usim_seen','1');}catch(e){}window.closeTut();});
