@@ -142,18 +142,21 @@ canvas{display:block}
 .tech-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;}
 .tech-badge{background:rgba(10,30,80,.6);border:1px solid rgba(60,120,255,.2);border-radius:4px;padding:5px 12px;font-size:11px;letter-spacing:1.5px;color:#7abcff;}
 .cs-inner .ad-w{text-align:center;margin:40px 0;}
-/* Labels */
+/* Labels — HTML overlay (CSS2D) */
+#labelContainer{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50;overflow:hidden;}
 .label3d{
   position:absolute;
-  color:#dfe8ff;
+  color:#cfe6ff;
   font-size:11px;
-  font-family:Arial,sans-serif;
+  font-family:'Courier New',monospace;
   font-weight:600;
-  text-shadow:0 0 4px rgba(0,0,0,.9);
+  letter-spacing:.5px;
+  text-shadow:0 0 6px rgba(0,0,0,1),0 0 3px rgba(0,0,0,1);
   pointer-events:none;
   white-space:nowrap;
-  transform:translate(-50%,-50%);
+  transform:translate(-50%,0);
   user-select:none;
+  opacity:.88;
 }
 
 </style>
@@ -315,6 +318,7 @@ canvas{display:block}
 
 <div id="spawnHint" data-i18n="spawnHintTxt">CLICK IN SPACE TO PLACE · ESC cancels</div>
 <div id="cursorDot"></div>
+<div id="labelContainer" style="display:none;"></div>
 <div id="sb">
   <div class="st"><span class="sl2" data-i18n="bodies">Bodies</span><span class="sv2" id="stB">0</span></div>
   <div class="st"><span class="sl2" data-i18n="time">Time</span><span class="sv2" id="stT">0 d</span></div>
@@ -983,10 +987,21 @@ class Body {
 
   _buildLabel(){
     if(this.labelSpr)return;
-    const cv=document.createElement('canvas');cv.width=256;cv.height=40;
-    const ctx=cv.getContext('2d');ctx.font='16px Courier New';ctx.fillStyle='#aaccff';ctx.textAlign='center';ctx.fillText(this.name,128,28);
-    const mat=new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv),transparent:true,opacity:.75,depthWrite:false});
-    this.labelSpr=new THREE.Sprite(mat);this.labelSpr.scale.set(800,200,1);scene.add(this.labelSpr);
+    const div=document.createElement('div');
+    div.className='label3d';
+    div.textContent=this.name;
+    document.getElementById('labelContainer').appendChild(div);
+    this.labelSpr=div;  // reuse same field name for compatibility
+  }
+
+  _projectToScreen(pos3d){
+    // Project 3D world position to 2D screen coordinates
+    const v=pos3d.clone().project(cam);
+    return {
+      x:(v.x*.5+.5)*innerWidth,
+      y:(-.5*v.y+.5)*innerHeight,
+      behind:v.z>1
+    };
   }
 
   showIndicator(){
@@ -1037,10 +1052,19 @@ class Body {
   }
 
   updLabel(){
-    if(!showLb||this.isAst){if(this.labelSpr)this.labelSpr.visible=false;return;}
+    if(!showLb||this.isAst){
+      if(this.labelSpr){this.labelSpr.style.display='none';}
+      return;
+    }
     if(!this.labelSpr)this._buildLabel();
-    this.labelSpr.visible=true;
-    this.labelSpr.position.set(this.pos.x,this.pos.y+this._visR*2.2,this.pos.z);
+    // Project body position + offset above it to screen
+    const above=this.pos.clone();
+    above.y+=this._visR*1.6+Math.max(60,this._visR*.4);
+    const sc=this._projectToScreen(above);
+    if(sc.behind){this.labelSpr.style.display='none';return;}
+    this.labelSpr.style.display='block';
+    this.labelSpr.style.left=sc.x+'px';
+    this.labelSpr.style.top=sc.y+'px';
   }
 
   updAppearance(){
@@ -1106,7 +1130,7 @@ class Body {
     if(this._tiltGroup){scene.remove(this._tiltGroup);}
     else{scene.remove(this.mesh);}
     if(this.trail)scene.remove(this.trail);
-    if(this.labelSpr)scene.remove(this.labelSpr);
+    if(this.labelSpr){this.labelSpr.remove();this.labelSpr=null;}
 
     if(this.light)scene.remove(this.light);
     if(this._hl)scene.remove(this._hl);
@@ -1768,7 +1792,18 @@ ren.domElement.addEventListener('mousemove',e=>{
 // ══════════════════════════════════════════════════════════
 window.toggleTrails=()=>{showTr=!showTr;document.getElementById('bTr').classList.toggle('on',showTr);if(!showTr)bodies.forEach(b=>{if(b.trail&&b._pts){b._pts.length=0;b.trail.geometry.setDrawRange(0,0);}});};
 window.toggleGrid=()=>{showGr=!showGr;gridMesh.visible=showGr;document.getElementById('bGr').classList.toggle('on',showGr);};
-window.toggleLabels=()=>{showLb=!showLb;document.getElementById('bLb').classList.toggle('on',showLb);};
+window.toggleLabels=()=>{
+  showLb=!showLb;
+  document.getElementById('bLb').classList.toggle('on',showLb);
+  const container=document.getElementById('labelContainer');
+  if(showLb){
+    container.style.display='block';
+  } else {
+    container.style.display='none';
+    // Hide all existing label divs so they don't flash on re-enable
+    bodies.forEach(b=>{if(b.labelSpr)b.labelSpr.style.display='none';});
+  }
+};
 window.togglePause=()=>{paused=!paused;document.getElementById('bPa').textContent=paused?(LANGS[_lang].resume||'RESUME'):(LANGS[_lang].pause||'PAUSE');document.getElementById('bPa').classList.toggle('on',paused);};
 window.resetSim=()=>{
   selBody=null;spawnMode=false;_pendingSpawn=null;_followTarget=null;
@@ -1877,8 +1912,8 @@ function animate(){
   // Grid
   if(showGr){gridT+=dt;if(gridT>.12){deformGrid(bodies);gridT=0;}}
 
-  // Labels
-  if(showLb)bodies.forEach(b=>{if(!b.removed)b.updLabel();});
+  // Labels — always call so hiding is immediate
+  bodies.forEach(b=>{if(!b.removed&&!b.isAst&&!b.isNebula)b.updLabel();});
 
   // Follow target (camera focus)
   if(_followTarget&&!_followTarget.removed&&!freeFly){
