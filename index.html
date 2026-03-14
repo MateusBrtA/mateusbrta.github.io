@@ -22,7 +22,7 @@
 <title>Universe Sim</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;overflow:hidden;font-family:'Courier New',monospace;color:#bcd}
+body{background:#000;overflow-x:hidden;overflow-y:auto;font-family:'Courier New',monospace;color:#bcd}
 canvas{display:block}
 #bar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(0,4,14,.92);backdrop-filter:blur(5px);border-bottom:1px solid rgba(60,120,255,.1);display:flex;align-items:center;gap:7px;padding:0 12px;z-index:100;pointer-events:auto;overflow:hidden}
 #bar h1{font-size:14px;letter-spacing:3px;color:#4af;font-weight:400;white-space:nowrap}
@@ -113,6 +113,49 @@ canvas{display:block}
 
 #moreBtn{padding:3px 10px;background:rgba(40,90,200,.1);border:1px solid rgba(60,120,255,.18);color:#7af;border-radius:2px;font:12px 'Courier New';letter-spacing:.5px;cursor:pointer;white-space:nowrap;transition:all .1s;pointer-events:auto;margin-left:auto;flex-shrink:0}
 #moreBtn:hover{background:rgba(60,120,255,.2);border-color:rgba(60,150,255,.4)}
+
+#scrollDown{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(0,8,24,.6);border:1px solid rgba(60,160,255,.35);border-radius:20px;padding:7px 18px;cursor:pointer;z-index:90;color:#4af;font-size:11px;letter-spacing:2px;font-family:inherit;display:flex;align-items:center;gap:7px;transition:opacity .35s,background .2s;}
+#scrollDown:hover{background:rgba(0,10,30,.9);border-color:#4af;}
+#scrollDown.hidden{opacity:0;pointer-events:none;}
+#scrollDown svg{width:14px;height:14px;stroke:#4af;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+#contentSec{background:#000408;padding:80px 0 100px;}
+.cs-inner{max-width:980px;margin:0 auto;padding:0 32px;}
+.cs-h2{font-size:14px;letter-spacing:4px;color:#4af;font-weight:400;margin:0 0 18px;border-bottom:1px solid rgba(60,120,255,.14);padding-bottom:10px;text-transform:uppercase;}
+.cs-h3{font-size:11.5px;letter-spacing:2.5px;color:#6cf;font-weight:400;margin:28px 0 11px;text-transform:uppercase;}
+.cs-p{font-size:13px;line-height:1.95;color:#7a9ab5;margin-bottom:12px;}
+.cs-hr{border:none;border-top:1px solid rgba(60,120,255,.1);margin:44px 0;}
+/* Planet grid */
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:18px 0 8px;}
+.pc{background:rgba(5,12,34,.8);border:1px solid rgba(60,120,255,.12);border-radius:8px;padding:15px 18px;}
+.pc-title{font-size:12px;letter-spacing:2px;color:#4af;margin-bottom:10px;font-weight:400;display:flex;align-items:center;gap:6px;}
+.pc-icon{font-size:18px;}
+.pc-row{display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;line-height:2.15;border-top:1px solid rgba(60,120,255,.07);gap:8px;}
+.pc-row span:first-child{color:#445;flex-shrink:0;}
+.pc-row span:last-child{color:#acd;text-align:right;}
+.pc-fact{margin-top:10px;padding-top:8px;border-top:1px solid rgba(60,120,255,.12);font-size:11.5px;color:#5a7a8a;line-height:1.6;font-style:italic;}
+/* Controls grid */
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:9px;margin:12px 0;}
+.cr{background:rgba(5,12,34,.7);border:1px solid rgba(60,120,255,.09);border-radius:5px;padding:9px 14px;font-size:12px;display:flex;gap:10px;align-items:flex-start;}
+.ck{color:#4af;min-width:58px;font-weight:700;letter-spacing:1px;flex-shrink:0;}
+.cv{color:#6a88a0;line-height:1.5;}
+/* Tech badges */
+.tech-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;}
+.tech-badge{background:rgba(10,30,80,.6);border:1px solid rgba(60,120,255,.2);border-radius:4px;padding:5px 12px;font-size:11px;letter-spacing:1.5px;color:#7abcff;}
+.cs-inner .ad-w{text-align:center;margin:40px 0;}
+/* Labels */
+.label3d{
+  position:absolute;
+  color:#dfe8ff;
+  font-size:11px;
+  font-family:Arial,sans-serif;
+  font-weight:600;
+  text-shadow:0 0 4px rgba(0,0,0,.9);
+  pointer-events:none;
+  white-space:nowrap;
+  transform:translate(-50%,-50%);
+  user-select:none;
+}
+
 </style>
 </head>
 <body>
@@ -522,7 +565,7 @@ const AU    = 6400;
 const BOOST = 8;
 const G     = 1.8e-3;   // calibrated for AU=6400
 // Sim time calibration: at tMult=1, real seconds → sim days
-const DAYS_PER_SEC = 2.036657; // Earth orbit takes ~179s real = 365 sim-days
+const DAYS_PER_SEC = 0.033944; // calibrated: Earth orbit 10753s real at tMult=1 → 365 sim-days
 const SOFT2 = 0.5;
 const M_SUN = 1989000;
 
@@ -540,7 +583,12 @@ ren.setSize(innerWidth, innerHeight);
 ren.toneMapping = THREE.ACESFilmicToneMapping;
 ren.toneMappingExposure = 0.7; // prevent washout of brightly lit planets
 ren.useLegacyLights = false; // physical 1/r² light falloff
-document.body.appendChild(ren.domElement);
+const _simWrapper=document.createElement('div');
+_simWrapper.id='simWrapper';
+_simWrapper.style.cssText='width:100%;height:100vh;position:relative;overflow:hidden;flex-shrink:0;';
+ren.domElement.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;display:block;';
+_simWrapper.appendChild(ren.domElement);
+document.body.appendChild(_simWrapper);
 
 const scene = new THREE.Scene();
 const cam = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 1, 2000000);
@@ -784,7 +832,7 @@ const MOONS=[
   // ── NEPTUNE ──
   {n:'Tritao',     par:'Netuno',  rkm:354800,  m:.02139,  r:.212*BOOST, c:0x99aacc,tx:'ice',    ecc:0.0000, inc:2.765,  rot:-5.877},
   {n:'Nereida',    par:'Netuno',  rkm:5513800, m:3.1e-5,  r:.028,       c:0x8899bb,tx:'moon',   ecc:0.7507, inc:0.0890, rot:360.1},
-  {n:'Proteu',     par:'Netuno',  rkm:117647,  m:4.4e-5,  r:.035,       c:0x667788,tx:'moon',   ecc:0.0005, inc:0.0008, rot:1.122},
+  {n:'Proteu',     par:'Netuno',  rkm:125000,  m:4.4e-5,  r:.035,       c:0x667788,tx:'moon',   ecc:0.0002, inc:0.012,  rot:1.122},
   // ── PLUTO ──
   {n:'Caronte',    par:'Plutao',  rkm:19571,   m:.001586, r:.095*BOOST, c:0xdddddd,tx:'moon',   ecc:0.0022, inc:0.0003, rot:6.387},
   {n:'Estige',     par:'Plutao',  rkm:42656,   m:1e-8,    r:.009,       c:0xccccbb,tx:'moon',   ecc:0.0058, inc:0.0010, rot:20.16},
@@ -886,10 +934,7 @@ class Body {
       scene.add(this.mesh);
     }
 
-    if(o.rings){
-      const rm=mkRing(visR*SAT_RI,visR*SAT_RO,o.rc||0xc5ab6e);
-      rm.rotation.x=Math.PI*.42;this.mesh.add(rm);
-    }
+    // Ring disc: particle rings only (RingSystem handles this in buildSolarSystem)
     if(this.isStar){
       const gc=this.type==='whitedwarf'?0xaaccff:this.type==='neutron'?0x88ddff:this.type==='browndwarf'?0xff6600:this.type==='giant'?0xff6622:this.color;
       addGlow(this.mesh,visR,gc);
@@ -1033,15 +1078,18 @@ class Body {
       // dAngle = 2π / |rotP| * sign * simDays this frame
       // _simDelta = dt * tMult (real-seconds * multiplier)
       // simDays = _simDelta * DAYS_PER_SEC
-      const simDaysThisFrame = _simDelta * DAYS_PER_SEC;
+      // Real rotation: period in real seconds = rotP_days * 86400
+      // dAngle = 2π * dt * tMult / (rotP * 86400)
       const rotSign = this.rotP < 0 ? -1 : 1;
-      const rotPeriod = Math.abs(this.rotP) || 1;
-      const dAngle = (2*Math.PI / rotPeriod) * simDaysThisFrame * rotSign;
+      // Convert real-time delta to sim-days, then rotate by 2π per rotP sim-days
+      const simDaysFrame = _simDelta * DAYS_PER_SEC;
+      const dAngle = (2 * Math.PI / Math.abs(this.rotP || 1)) * simDaysFrame * rotSign;
       if(dAngle !== 0) this.mesh.rotation.y += dAngle;
       if(this._hl)this._hl.position.copy(this.pos);
       if(this.light)this._syncLight();
     }
     if(this._nebulaGrp)this._nebulaGrp.position.copy(this.pos);
+
     if(this._indGrp)this.syncIndicator();
     this._frame++;
   }
@@ -1059,6 +1107,7 @@ class Body {
     else{scene.remove(this.mesh);}
     if(this.trail)scene.remove(this.trail);
     if(this.labelSpr)scene.remove(this.labelSpr);
+
     if(this.light)scene.remove(this.light);
     if(this._hl)scene.remove(this._hl);
     if(this._nebulaGrp){scene.remove(this._nebulaGrp);const idx=_nebulae.indexOf(this._nebulaGrp);if(idx>=0)_nebulae.splice(idx,1);}
@@ -1170,8 +1219,20 @@ function buildSolarSystem(){
   document.getElementById('stC').textContent='0';
   const pm={};
 
+  // Fixed starting angles per planet — evenly spaced, fully deterministic.
+  // This guarantees planets always start at known positions so moons
+  // cannot accidentally overlap the planet or each other at t=0.
+  const _planetAngles = {};
+  const _nonSunPlanets = PLANETS.filter(d=>d.au>0);
+  _nonSunPlanets.forEach((d,i)=>{
+    // Spread evenly: 0, 2π/n, 4π/n ... with a small prime-number offset per planet
+    // to break perfect symmetry (visually nicer) while keeping determinism.
+    _planetAngles[d.n] = (i / _nonSunPlanets.length) * Math.PI * 2 + i * 0.17;
+  });
+
   for(const d of PLANETS){
-    const ang=Math.random()*6.28, a=d.au*AU;
+    const ang = _planetAngles[d.n] !== undefined ? _planetAngles[d.n] : 0;
+    const a=d.au*AU;
     const ecc=d.ecc||0;
     const inc=d.inc||0;
     // Position on inclined ellipse at random true anomaly
@@ -1203,39 +1264,183 @@ function buildSolarSystem(){
     b.vel.copy(velDir).multiplyScalar(v);
   });
 
-  // ── Moons using real orbital data (rkm + eccentricity + inclination) ──
+  // ── Moons: collision-free placement with real proportions ──
+  //
+  // Problems solved:
+  // 1. Math.max(realDist, minClear) clamped ALL inner moons to same distance → collisions
+  // 2. Random angles → moons started at same XYZ → immediate collision
+  // 3. No Y-axis variation for coplanar moons → all in same horizontal plane
+  // 4. Outer irregular moons placed too far → escaped Hill sphere → flew to Sun
+  //
+  // Algorithm:
+  // a) Group moons by parent, sort by rkm (innermost first)
+  // b) Compute one scale factor per parent: innermost moon clears planet surface
+  // c) Cap each moon at 40% of Hill sphere to prevent escapes
+  // d) For moons that exceed safe zone: redistribute them evenly within safe zone,
+  //    preserving their ORDER (inner moons stay inner)
+  // e) Regular moons (inc<0.15 rad): evenly spaced angles + small Y offset per index
+  // f) Irregular moons (inc≥0.15 rad): their high-inclination orbital planes
+  //    naturally separate them in 3D — no collision even at similar distances
+
+  // Hill sphere fraction considered stable (40%)
+  const HILL_FRAC = 0.40;
+  // Precompute Hill safe distances per planet (in vu)
+  const _hillSafe = {};
+  for(const [pn,par] of Object.entries(pm)){
+    if(!par.isStar){
+      // Find this planet's AU from PLANETS array
+      const pd = PLANETS.find(p=>p.n===pn);
+      const au = pd ? pd.au : 1;
+      const hill_km = au * 149597870.7 * Math.pow(par.mass/(3*M_SUN), 1/3);
+      _hillSafe[pn] = hill_km * KM_TO_VU * HILL_FRAC;
+    }
+  }
+
+  // Group and sort moons
+  const _mg = {};
   for(const md of MOONS){
-    const par=pm[md.par];if(!par)continue;
-    // Convert km to visual units
-    const rkm = md.rkm || 0;
-    const moonDist = rkm * KM_TO_VU;
-    // Safety: must be outside parent body
-    if(moonDist <= par._visR + (md.r||1) + 1) continue;
-    // Random true anomaly for initial angle
-    const ang = Math.random()*Math.PI*2;
-    // Apply eccentricity: use semi-major axis with random phase
-    const ecc = md.ecc || 0;
-    const r_actual = moonDist * (1 - ecc*ecc) / (1 + ecc*Math.cos(ang));
-    // Inclination: tilt the orbital plane around the x-axis
-    const inc = md.inc || 0;
-    const xOff = r_actual * Math.cos(ang);
-    const zFlat = r_actual * Math.sin(ang);
-    const yOff = zFlat * Math.sin(inc);
-    const zOff = zFlat * Math.cos(inc);
-    const b=new Body({n:md.n,ty:'moon',m:md.m,r:md.r,c:md.c,t:-60,tx:md.tx,
-      rot:md.rot, axialTilt:md.inc||0,
-      x:par.pos.x+xOff, y:par.pos.y+yOff, z:par.pos.z+zOff});
-    // Orbital velocity accounts for eccentricity (vis-viva)
-    const GM = G * par.mass;
-    const vVis = Math.sqrt(GM * (2/r_actual - 1/moonDist));
-    // Velocity perpendicular to radius vector, in orbital plane
-    const radDir = new THREE.Vector3(xOff, yOff, zOff).normalize();
-    const planeNorm = new THREE.Vector3(0, Math.cos(inc), -Math.sin(inc));
-    const velDir = new THREE.Vector3().crossVectors(planeNorm, radDir).normalize();
-    // Retrograde: negative rotPeriod means retrograde orbit
-    const retrograde = md.rot < 0 ? -1 : 1;
-    b.vel.copy(par.vel).addScaledVector(velDir, vVis * retrograde);
-    bodies.push(b);
+    if(!pm[md.par]) continue;
+    if(!_mg[md.par]) _mg[md.par] = [];
+    _mg[md.par].push(md);
+  }
+  for(const arr of Object.values(_mg)) arr.sort((a,b)=>(a.rkm||0)-(b.rkm||0));
+
+  // Compute per-parent scale (based on innermost moon clearing the planet)
+  const _ms = {};
+  for(const [pn,arr] of Object.entries(_mg)){
+    const par = pm[pn];
+    const innerVu = (arr[0].rkm||1) * KM_TO_VU;
+    const innerR = arr[0].r || 0.01;
+    // Extra margin: 2.5× to guarantee eccentricity at periapsis doesn't clip the planet
+    // Periapsis = moonDist*(1-ecc). Worst case: moonDist*(1-ecc) > par._visR + moonR + 1.0
+    // Solve for moonDist: moonDist > (par._visR + moonR + 1.0) / (1 - ecc)
+    const innerEcc = arr[0].ecc || 0;
+    const minClear = (par._visR + innerR + 1.5) / Math.max(0.01, 1 - innerEcc);
+    _ms[pn] = innerVu < minClear ? minClear / innerVu : 1.0;
+  }
+
+  // Compute display distances for each moon group
+  for(const [pn,arr] of Object.entries(_mg)){
+    const par   = pm[pn];
+    const scale = _ms[pn];
+    const safe  = _hillSafe[pn] || 99999;
+
+    // Raw scaled distances preserving real orbital ratios
+    const rawDists = arr.map(md => (md.rkm||0) * KM_TO_VU * scale);
+
+    // Build final display distances with guaranteed clearance and minimum gap
+    const dispDists = [];
+    let lastDist = 0;
+    const MIN_GAP = Math.max(3.2, par._visR * 0.24); // minimum vu between consecutive moon semi-major axes
+
+    rawDists.forEach((raw, i) => {
+      const moonR = arr[i].r || 0.01;
+      const moonEcc = arr[i].ecc || 0;
+      // Periapsis must clear planet: d*(1-ecc) > par._visR + moonR + 1.0
+      const minForPeriapsis = (par._visR + moonR + 3.0 + par._visR*0.08) / Math.max(0.01, 1 - moonEcc);
+      let d = Math.min(raw, safe * 0.95);
+      if (pn === 'Plutao') {
+        if (i === 0) d *= 1.18;   // Caronte um pouco mais distante
+        else d *= 1 + i * 0.42;   // outras luas ainda mais afastadas
+        }
+      d = Math.max(d, minForPeriapsis);
+      d = Math.max(d, lastDist + MIN_GAP);
+      d = Math.min(d, safe * 0.98);
+      dispDists.push(d);
+      lastDist = d;
+    });
+
+    // Separate into regular (inc<0.15 rad = coplanar) and irregular (inc≥0.15 rad = tilted planes)
+    const regularIdxs   = arr.map((_,i)=>i).filter(i=>(arr[i].inc||0)<0.15);
+    const irregularIdxs = arr.map((_,i)=>i).filter(i=>(arr[i].inc||0)>=0.15);
+
+    // Evenly distributed start angles — golden-angle spacing avoids periodicity
+    const angleOf = new Array(arr.length);
+    regularIdxs.forEach((gi, li) => {
+    const md = arr[gi];
+
+    if (pn === 'Jupiter') {
+        if (md.n === 'Io') angleOf[gi] = 0;
+        else if (md.n === 'Europa') angleOf[gi] = Math.PI;
+        else if (md.n === 'Ganimedes') angleOf[gi] = Math.PI * 0.5;
+        else angleOf[gi] = (li / arr.length) * Math.PI * 2;
+    } else {
+        angleOf[gi] = (li / arr.length) * Math.PI * 2;
+    }
+    });
+    irregularIdxs.forEach((gi, li) => {
+      angleOf[gi] = (li / Math.max(irregularIdxs.length,1)) * Math.PI*2 + (Math.random()-0.5)*0.4;
+    });
+
+    // Spawn each moon — NO yNudge: adding an artificial Y offset without matching velocity
+    // breaks the orbital mechanics. The inclination field already handles 3D separation.
+    arr.forEach((md, i) => {
+      const moonDist = dispDists[i];
+      if (i > 0) {
+        const prev = arr[i-1];
+        const prevR = prev.r || 0.01;
+        let safeGap = (prevR + (md.r||0)) * 4.5;
+
+        if (pn === 'Saturno') safeGap *= 1.35;
+        if (pn === 'Netuno') safeGap *= 1.25;
+        if (pn === 'Plutao') safeGap *= 1.5;
+
+    if (moonDist - dispDists[i-1] < safeGap) {
+        dispDists[i] = dispDists[i-1] + safeGap;
+        }
+    }
+      const ecc = md.ecc || 0;
+      const inc = md.inc || 0;
+      const perturb = Math.sin(i * 12.9898 + performance.now() * 0.00002) * moonDist * 0.002;
+      const ang = angleOf[i] + perturb / moonDist;
+      const tidal = Math.sin(performance.now()*0.00003 + i*2.7) * md.ecc * moonDist * 0.0015;
+
+      // r_actual: position on the ellipse at this true anomaly
+      const r_actual = moonDist * (1 - ecc*ecc) / (1 + ecc*Math.cos(ang));
+
+      // Orbital plane inclined by `inc` around the X axis
+      const node = ((i / arr.length) * Math.PI * 2); // longitude nodal única por lua
+
+      const cosI = Math.cos(inc);
+      const sinI = Math.sin(inc);
+      const cosN = Math.cos(node);
+      const sinN = Math.sin(node);
+
+      const xFlat = r_actual * Math.cos(ang);
+      const zFlat = r_actual * Math.sin(ang);
+
+      // Rotação orbital 3D real
+      const x1 = xFlat;
+      const y1 = zFlat * sinI;
+      const z1 = zFlat * cosI;
+
+      // Rotaciona o plano orbital em torno do eixo Y
+      const xOff = x1 * cosN - z1 * sinN;
+      const yOff = y1;
+      const zOff = x1 * sinN + z1 * cosN;
+
+      const b = new Body({
+        n:md.n, ty:'moon', m:md.m, r:md.r, c:md.c, t:-60, tx:md.tx,
+        rot:md.rot, axialTilt:inc,
+        x:par.pos.x + xOff,
+        y:par.pos.y + yOff,
+        z:par.pos.z + zOff
+      });
+
+      const GM   = G * par.mass;
+      const vVis = Math.sqrt(GM * (2/r_actual - 1/moonDist));
+
+      // Velocity perpendicular to radius in the tilted orbital plane
+      const radDir = new THREE.Vector3(xOff, yOff, zOff).normalize();
+
+      const planeNorm = new THREE.Vector3(sinN * sinI, cosI, -cosN * sinI).normalize();
+      const velDir = new THREE.Vector3().crossVectors(planeNorm, radDir).normalize();
+
+      const retrograde = md.rot < 0 ? -1 : 1;
+      const vPerturb = 1 + Math.sin(i * 7.13) * 0.003;
+      b.vel.copy(par.vel).addScaledVector(velDir, vVis * retrograde * vPerturb);
+      bodies.push(b);
+    });
   }
 
   // ── Saturn ring particles (InstancedMesh) ──
@@ -1257,11 +1462,29 @@ function buildSolarSystem(){
     b.vel.copy(orbVel(b.pos,sun.pos,sun.mass));bodies.push(b);
   }
 
-  // Main belt 2.2–3.2 AU
-  for(let i=0;i<40;i++){
-    const dist=(2.2+Math.random()*1.0)*AU,ang=Math.random()*6.28;
-    const b=new Body({n:'Ast',ty:'asteroid',m:2e-6+Math.random()*7e-5,r:.05*BOOST+Math.random()*.08*BOOST,c:0x776655+Math.floor(Math.random()*0x222111),tx:'asteroid',x:dist*Math.cos(ang),y:(Math.random()-.5)*AU*.015,z:dist*Math.sin(ang)});
-    b.vel.copy(orbVel(b.pos,sun.pos,sun.mass));b.vel.x+=(Math.random()-.5)*.003;b.vel.z+=(Math.random()-.5)*.003;bodies.push(b);
+  // ── Asteroid belt: visual particle ring between Mars and Jupiter ──
+  // Belt at 2.2–3.2 AU = 14080–20480 vu. Particles must be large enough
+  // to be visible from the default camera distance (~35000 vu away).
+  {
+    const N=3000, sunMass=sun?sun.mass:1989000;
+    const geo=new THREE.IcosahedronGeometry(1,0);
+    const mat=new THREE.MeshBasicMaterial({color:0xaa9977});
+    const im=new THREE.InstancedMesh(geo,mat,N); im.frustumCulled=false;
+    scene.add(im);
+    const parts=[], dum=new THREE.Object3D();
+    for(let i=0;i<N;i++){
+      const dist=(2.2+Math.random()*1.0)*AU;
+      const ang=Math.random()*Math.PI*2;
+      const y=(Math.random()-.5)*AU*0.02;  // thin but visible vertical spread
+      const sz=8+Math.random()*18;          // 8–26 vu — visible at belt distance
+      parts.push({dist,ang,y,sz,omega:Math.sqrt(G*sunMass/(dist*dist*dist))});
+    }
+    parts.forEach((p,i)=>{
+      dum.position.set(Math.cos(p.ang)*p.dist,p.y,Math.sin(p.ang)*p.dist);
+      dum.scale.setScalar(p.sz);dum.updateMatrix();im.setMatrixAt(i,dum.matrix);
+    });
+    im.instanceMatrix.needsUpdate=true;
+    window._belt={im,parts,dum};
   }
 
   // Kuiper belt
@@ -1547,7 +1770,12 @@ window.toggleTrails=()=>{showTr=!showTr;document.getElementById('bTr').classList
 window.toggleGrid=()=>{showGr=!showGr;gridMesh.visible=showGr;document.getElementById('bGr').classList.toggle('on',showGr);};
 window.toggleLabels=()=>{showLb=!showLb;document.getElementById('bLb').classList.toggle('on',showLb);};
 window.togglePause=()=>{paused=!paused;document.getElementById('bPa').textContent=paused?(LANGS[_lang].resume||'RESUME'):(LANGS[_lang].pause||'PAUSE');document.getElementById('bPa').classList.toggle('on',paused);};
-window.resetSim=()=>{selBody=null;spawnMode=false;_pendingSpawn=null;_followTarget=null;document.getElementById('sp').style.display='none';exitPlaceMode();buildSolarSystem();};
+window.resetSim=()=>{
+  selBody=null;spawnMode=false;_pendingSpawn=null;_followTarget=null;
+  document.getElementById('sp').style.display='none';exitPlaceMode();
+  if(window._belt){scene.remove(window._belt.im);window._belt.im.geometry.dispose();window._belt=null;}
+  buildSolarSystem();
+};
 document.getElementById('spS').oninput=function(){
   tMult=Math.max(0,parseFloat(this.value)||0);
   document.getElementById('spD').value=tMult.toFixed(1);
@@ -1619,6 +1847,16 @@ function animate(){
     for(const rs of ringSystems){
       if(!rs.parent.removed) rs._update(physStep2*15);
     }
+    // Update asteroid belt particles
+    if(window._belt){
+      const {im,parts,dum}=window._belt;
+      parts.forEach((p,i)=>{
+        p.ang+=p.omega*physStep2*15;
+        dum.position.set(Math.cos(p.ang)*p.dist,p.y,Math.sin(p.ang)*p.dist);
+        dum.scale.setScalar(p.sz);dum.updateMatrix();im.setMatrixAt(i,dum.matrix);
+      });
+      im.instanceMatrix.needsUpdate=true;
+    }
 
     bodies.forEach(b=>{if(!b.removed){b.sync();b.updTrail();if(!b.isAst&&!b.isNebula)b.updAppearance();}});
 
@@ -1659,7 +1897,24 @@ function animate(){
       const s2=bodies.find(b=>b.isStar&&b.name==='Sol')||bodies.find(b=>b.isStar);
       if(s2)document.getElementById('si-ds').textContent=(selBody.pos.distanceTo(s2.pos)/AU).toFixed(3)+' AU';
     } else if(selBody&&selBody.removed)closeSel();
-    document.getElementById('stT').textContent=simTime<365?simTime.toFixed(1)+' d':(simTime/365).toFixed(2)+' yr';
+    // Time display: h:mm:ss → days → years
+(function(){
+  const d=simTime;
+  let txt;
+  if(d<1){
+    // Show hours:minutes:seconds
+    const totalSec=Math.floor(d*86400);
+    const h=Math.floor(totalSec/3600);
+    const m=Math.floor((totalSec%3600)/60);
+    const s=totalSec%60;
+    txt=h+'h '+String(m).padStart(2,'0')+'m '+String(s).padStart(2,'0')+'s';
+  } else if(d<365){
+    txt=d.toFixed(2)+' d';
+  } else {
+    txt=(d/365).toFixed(3)+' yr';
+  }
+  document.getElementById('stT').textContent=txt;
+})();
   }
 
   if(freeFly){
@@ -1694,5 +1949,337 @@ window.openInfo = function() { window.open('about.html', '_blank', 'noopener'); 
 
 animate();
 </script>
+
+<!-- ════ SCROLL ARROW ════ -->
+<button id="scrollDown" onclick="document.getElementById('contentSec').scrollIntoView({behavior:'smooth'})" title="Ver informações sobre o Sistema Solar">
+  <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+  INFO
+</button>
+<button id="scrollUp" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Voltar para a simulação" style="display:none;position:fixed;bottom:20px;right:20px;background:rgba(0,8,24,.6);border:1px solid rgba(60,160,255,.35);border-radius:20px;padding:7px 18px;cursor:pointer;z-index:90;color:#4af;font-size:11px;letter-spacing:2px;font-family:inherit;align-items:center;gap:7px;transition:opacity .35s,background .2s;">
+  <svg style="width:14px;height:14px;stroke:#4af;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+  SIMULAÇÃO
+</button>
+
+<!-- ════ CONTENT SECTION ════ -->
+<section id="contentSec">
+<div class="cs-inner">
+
+  <h2 class="cs-h2" data-cs="s1h">O QUE É O UNIVERSIM</h2>
+  <p class="cs-p" data-cs="s1p1">UniverSim é um simulador gravitacional N-body em tempo real construído com WebGL e Three.js. Cada corpo celeste exerce força gravitacional sobre todos os outros — calculada a cada frame com a Lei da Gravitação Universal de Newton, com suavização ε²=0,5 para evitar singularidades numéricas em encontros próximos.</p>
+  <p class="cs-p" data-cs="s1p2">O Sistema Solar completo está modelado com dados reais: massas, raios, inclinações axiais, excentricidades orbitais, inclinações de plano e períodos de rotação de todos os planetas e mais de 131 luas. O cinturão de asteroides (2,2–3,2 UA) é representado por 3.000 partículas keplerianas em órbita. Saturno e Urano têm anéis de partículas com movimento orbital independente.</p>
+  <p class="cs-p" data-cs="s1p3">A iluminação física usa a Lei do Inverso do Quadrado (decay=2 no Three.js), reproduzindo exatamente como a irradiância cai com distância ao quadrado. Mercúrio recebe ~10,6× mais irradiância que a Terra; Netuno recebe apenas 0,11% do que a Terra recebe.</p>
+
+  <div class="tech-row">
+    <span class="tech-badge">Three.js r128</span>
+    <span class="tech-badge">WebGL 2.0</span>
+    <span class="tech-badge">N-Body O(n²)</span>
+    <span class="tech-badge">Vis-Viva Orbital</span>
+    <span class="tech-badge">ACES Filmic Tonemapping</span>
+    <span class="tech-badge">Instanced Mesh</span>
+    <span class="tech-badge">OrbitControls</span>
+    <span class="tech-badge">PointerLock API</span>
+  </div>
+
+  <div class="cs-hr"></div>
+  <h2 class="cs-h2" data-cs="s2h">COMO USAR</h2>
+  <h3 class="cs-h3" data-cs="s2c">CÂMERA &amp; NAVEGAÇÃO</h3>
+  <div class="cg">
+    <div class="cr"><span class="ck">Mouse</span><span class="cv" data-cs="k1">Arrastar para orbitar a câmera em torno do ponto de foco</span></div>
+    <div class="cr"><span class="ck">Scroll</span><span class="cv" data-cs="k2">Zoom in / out — aproximar ou afastar a câmera</span></div>
+    <div class="cr"><span class="ck" data-cs="k3k">Bot. dir.</span><span class="cv" data-cs="k3">Pan — desloca lateralmente o ponto de foco da câmera</span></div>
+    <div class="cr"><span class="ck">Clique</span><span class="cv" data-cs="k4">Selecionar corpo — abre o painel de informações e edição</span></div>
+    <div class="cr"><span class="ck">2× Clique</span><span class="cv" data-cs="k5">Focar e seguir o corpo (câmera orbita ao redor dele)</span></div>
+    <div class="cr"><span class="ck">V</span><span class="cv" data-cs="k6">Voo Livre — mouse controla direção, WASD move, Q/E altitude, SHIFT acelera 5×</span></div>
+  </div>
+  <h3 class="cs-h3" data-cs="s2t">CONTROLES DA SIMULAÇÃO</h3>
+  <div class="cg">
+    <div class="cr"><span class="ck">PAUSE</span><span class="cv" data-cs="t1">Pausar / retomar — congela toda a física e animação</span></div>
+    <div class="cr"><span class="ck">RESET</span><span class="cv" data-cs="t2">Reinicia o Sistema Solar completo com posições aleatórias</span></div>
+    <div class="cr"><span class="ck">TRAILS</span><span class="cv" data-cs="t3">Rastros orbitais — mostra o caminho percorrido por cada corpo</span></div>
+    <div class="cr"><span class="ck">LABELS</span><span class="cv" data-cs="t4">Nomes dos corpos — exibe labels proporcionais ao tamanho</span></div>
+    <div class="cr"><span class="ck">GRID</span><span class="cv" data-cs="t5">Grade de curvatura espaço-tempo — deformada por corpos massivos</span></div>
+    <div class="cr"><span class="ck">T Slider</span><span class="cv" data-cs="t6">Multiplicador de tempo: 0× (parado) até 300× (tempo acelerado)</span></div>
+    <div class="cr"><span class="ck">SPAWN</span><span class="cv" data-cs="t7">Criar novo corpo — planeta, estrela, gigante vermelha, anã branca, buraco negro, asteroide, cometa, nebulosa</span></div>
+    <div class="cr"><span class="ck">TRANSFORM</span><span class="cv" data-cs="t8">Selecionar uma estrela e transformá-la em outro tipo estelar</span></div>
+  </div>
+
+  <div class="cs-hr"></div>
+  <h2 class="cs-h2" data-cs="s3h">DADOS DOS PLANETAS DO SISTEMA SOLAR</h2>
+  <div class="pg">
+
+    <div class="pc">
+      <div class="pc-title"><span class="pc-icon">☿</span><span data-cs="pn0">MERCÚRIO</span></div>
+      <div class="pc-row"><span data-cs="lm">Massa</span><span>3,30 × 10²³ kg</span></div>
+      <div class="pc-row"><span data-cs="lo">Período orbital</span><span>87,97 dias</span></div>
+      <div class="pc-row"><span data-cs="lr">Rotação sideral</span><span>58,65 dias</span></div>
+      <div class="pc-row"><span data-cs="lt">Temp. média</span><span>167°C</span></div>
+      <div class="pc-row"><span data-cs="ld">Dist. média Sol</span><span>0,387 UA · 57,9 Mkm</span></div>
+      <div class="pc-row"><span data-cs="le">Excentricidade</span><span>0,2056 (a mais alta)</span></div>
+      <div class="pc-row"><span data-cs="lri">Raio equatorial</span><span>2 440 km (0,38 Terra)</span></div>
+      <div class="pc-row"><span data-cs="la">Incl. axial</span><span>0,034° (quase zero)</span></div>
+      <div class="pc-row"><span data-cs="ll">Luas</span><span>0</span></div>
+      <div class="pc-fact" data-cs="pf0">Mercúrio tem o dia solar mais longo do Sistema Solar: 176 dias terrestres. A diferença extrema de temperatura entre dia (+430°C) e noite (−180°C) ocorre por não ter atmosfera significativa.</div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-title"><span class="pc-icon">♀</span><span data-cs="pn1">VÊNUS</span></div>
+      <div class="pc-row"><span>Massa</span><span>4,87 × 10²⁴ kg</span></div>
+      <div class="pc-row"><span>Período orbital</span><span>224,70 dias</span></div>
+      <div class="pc-row"><span>Rotação sideral</span><span>243,02 dias (retr.)</span></div>
+      <div class="pc-row"><span>Temp. média</span><span>464°C (efeito estufa)</span></div>
+      <div class="pc-row"><span>Dist. média Sol</span><span>0,723 UA · 108,2 Mkm</span></div>
+      <div class="pc-row"><span>Excentricidade</span><span>0,0067 (mais circular)</span></div>
+      <div class="pc-row"><span>Raio equatorial</span><span>6 052 km (0,95 Terra)</span></div>
+      <div class="pc-row"><span>Incl. axial</span><span>177,4° (rotação retrógrada)</span></div>
+      <div class="pc-row"><span>Luas</span><span>0</span></div>
+      <div class="pc-fact">Em Vênus, o Sol nasce no Oeste. Sua rotação retrógrada combinada com a órbita faz o dia solar durar apenas 116 dias terrestres. A pressão atmosférica é 92× a da Terra.</div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-title"><span class="pc-icon">⊕</span><span data-cs="pn2">TERRA</span></div>
+      <div class="pc-row"><span>Massa</span><span>5,97 × 10²⁴ kg</span></div>
+      <div class="pc-row"><span>Período orbital</span><span>365,25 dias (1 ano)</span></div>
+      <div class="pc-row"><span>Rotação sideral</span><span>23h 56m 4s</span></div>
+      <div class="pc-row"><span>Temp. média</span><span>15°C (com efeito estufa)</span></div>
+      <div class="pc-row"><span>Dist. média Sol</span><span>1,000 UA · 149,6 Mkm</span></div>
+      <div class="pc-row"><span>Excentricidade</span><span>0,0167</span></div>
+      <div class="pc-row"><span>Raio equatorial</span><span>6 371 km</span></div>
+      <div class="pc-row"><span>Incl. axial</span><span>23,44° (causa as estações)</span></div>
+      <div class="pc-row"><span>Luas</span><span>1 (Lua — 384.400 km)</span></div>
+      <div class="pc-fact">A Terra é o único planeta conhecido com vida. Seu campo magnético protege a superfície do vento solar. A Lua estabiliza a inclinação axial em ~23°, tornando o clima mais previsível.</div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-title"><span class="pc-icon">♂</span><span data-cs="pn3">MARTE</span></div>
+      <div class="pc-row"><span>Massa</span><span>6,39 × 10²³ kg (0,107 Terra)</span></div>
+      <div class="pc-row"><span>Período orbital</span><span>686,97 dias (1,88 anos)</span></div>
+      <div class="pc-row"><span>Rotação sideral</span><span>24h 37m 23s</span></div>
+      <div class="pc-row"><span>Temp. média</span><span>−63°C (−143°C a +35°C)</span></div>
+      <div class="pc-row"><span>Dist. média Sol</span><span>1,524 UA · 227,9 Mkm</span></div>
+      <div class="pc-row"><span>Excentricidade</span><span>0,0934</span></div>
+      <div class="pc-row"><span>Raio equatorial</span><span>3 390 km (0,53 Terra)</span></div>
+      <div class="pc-row"><span>Incl. axial</span><span>25,19° (estações similares)</span></div>
+      <div class="pc-row"><span>Luas</span><span>2 — Fobos (9.376 km) · Deimos (23.463 km)</span></div>
+      <div class="pc-fact">O Olympus Mons em Marte é o vulcão mais alto do Sistema Solar: 21,9 km de altitude. O Vale Marineris tem 4.000 km de comprimento. Fobos orbita tão próximo que sobe no Oeste e se põe no Leste 3× por dia marciano.</div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-title"><span class="pc-icon">♃</span><span data-cs="pn4">JÚPITER</span></div>
+      <div class="pc-row"><span>Massa</span><span>1,898 × 10²⁷ kg (318 Terras)</span></div>
+      <div class="pc-row"><span>Período orbital</span><span>11,86 anos</span></div>
+      <div class="pc-row"><span>Rotação sideral</span><span>9h 55m 30s (mais rápido)</span></div>
+      <div class="pc-row"><span>Temp. topo nuvens</span><span>−108°C</span></div>
+      <div class="pc-row"><span>Dist. média Sol</span><span>5,203 UA · 778,5 Mkm</span></div>
+      <div class="pc-row"><span>Excentricidade</span><span>0,0489</span></div>
+      <div class="pc-row"><span>Raio equatorial</span><span>71 492 km (11,2 Terras)</span></div>
+      <div class="pc-row"><span>Incl. axial</span><span>3,13° (quasi sem estações)</span></div>
+      <div class="pc-row"><span>Luas conf.</span><span>95 — Io · Europa · Ganimedes · Calisto</span></div>
+      <div class="pc-fact">A Grande Mancha Vermelha é uma tempestade maior que a Terra com pelo menos 350 anos. Júpiter irradia mais energia do que recebe do Sol. Io é o objeto geologicamente mais ativo do Sistema Solar, com mais de 400 vulcões ativos.</div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-title"><span class="pc-icon">♄</span><span data-cs="pn5">SATURNO</span></div>
+      <div class="pc-row"><span>Massa</span><span>5,68 × 10²⁶ kg (95 Terras)</span></div>
+      <div class="pc-row"><span>Período orbital</span><span>29,46 anos</span></div>
+      <div class="pc-row"><span>Rotação sideral</span><span>10h 33m 38s</span></div>
+      <div class="pc-row"><span>Temp. topo nuvens</span><span>−138°C</span></div>
+      <div class="pc-row"><span>Dist. média Sol</span><span>9,537 UA · 1.432 Mkm</span></div>
+      <div class="pc-row"><span>Excentricidade</span><span>0,0565</span></div>
+      <div class="pc-row"><span>Raio equatorial</span><span>60 268 km (9,45 Terras)</span></div>
+      <div class="pc-row"><span>Incl. axial</span><span>26,73°</span></div>
+      <div class="pc-row"><span>Luas conf.</span><span>146 — Titã · Encélado · Reia · Jápeto</span></div>
+      <div class="pc-fact">Saturno é o único planeta menos denso que a água (densidade 0,687 g/cm³) — flutuaria em um oceano suficientemente grande. Seus anéis se estendem até 282.000 km mas têm apenas 20–200 metros de espessura. Encélado expele gêiseres de água.</div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-title"><span class="pc-icon">⛢</span><span data-cs="pn6">URANO</span></div>
+      <div class="pc-row"><span>Massa</span><span>8,68 × 10²⁵ kg (14,5 Terras)</span></div>
+      <div class="pc-row"><span>Período orbital</span><span>84,01 anos</span></div>
+      <div class="pc-row"><span>Rotação sideral</span><span>17h 14m (retrógrado)</span></div>
+      <div class="pc-row"><span>Temp. mínima</span><span>−224°C (mais frio que Netuno)</span></div>
+      <div class="pc-row"><span>Dist. média Sol</span><span>19,19 UA · 2.871 Mkm</span></div>
+      <div class="pc-row"><span>Excentricidade</span><span>0,0457</span></div>
+      <div class="pc-row"><span>Raio equatorial</span><span>25 559 km (4,01 Terras)</span></div>
+      <div class="pc-row"><span>Incl. axial</span><span>97,77° — orbita "deitado"</span></div>
+      <div class="pc-row"><span>Luas conf.</span><span>27 — Miranda · Ariel · Umbriel · Titânia · Oberon</span></div>
+      <div class="pc-fact">Urano orbita quase de lado: seu polo norte aponta para o Sol durante parte do ano, fazendo cada polo ter ~42 anos de luz solar contínua seguidos por 42 anos de escuridão. É o único gigante de gelo giróide.</div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-title"><span class="pc-icon">♆</span><span data-cs="pn7">NETUNO</span></div>
+      <div class="pc-row"><span>Massa</span><span>1,02 × 10²⁶ kg (17,1 Terras)</span></div>
+      <div class="pc-row"><span>Período orbital</span><span>164,8 anos</span></div>
+      <div class="pc-row"><span>Rotação sideral</span><span>16h 6m 36s</span></div>
+      <div class="pc-row"><span>Temp. média</span><span>−201°C (topo nuvens)</span></div>
+      <div class="pc-row"><span>Dist. média Sol</span><span>30,07 UA · 4.495 Mkm</span></div>
+      <div class="pc-row"><span>Excentricidade</span><span>0,0113</span></div>
+      <div class="pc-row"><span>Raio equatorial</span><span>24 764 km (3,88 Terras)</span></div>
+      <div class="pc-row"><span>Incl. axial</span><span>28,32°</span></div>
+      <div class="pc-row"><span>Luas conf.</span><span>16 — Tritão (retrógrado) · Nereida</span></div>
+      <div class="pc-fact">Netuno tem os ventos mais rápidos do Sistema Solar: até 2.100 km/h. Tritão orbita no sentido contrário ao da rotação de Netuno — provavelmente um objeto do Cinturão de Kuiper capturado. Sua órbita decai e ele colidirá com Netuno em ~3,6 bilhões de anos.</div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-title"><span class="pc-icon">♇</span><span data-cs="pn8">PLUTÃO</span></div>
+      <div class="pc-row"><span>Massa</span><span>1,30 × 10²² kg (0,00218 Terra)</span></div>
+      <div class="pc-row"><span>Período orbital</span><span>247,94 anos</span></div>
+      <div class="pc-row"><span>Rotação sideral</span><span>6,39 dias (retrógrado)</span></div>
+      <div class="pc-row"><span>Temp. média</span><span>−229°C (38–55 K)</span></div>
+      <div class="pc-row"><span>Dist. Sol</span><span>29,7–49,3 UA (excêntrico)</span></div>
+      <div class="pc-row"><span>Excentricidade</span><span>0,2488 (cruza órbita de Netuno)</span></div>
+      <div class="pc-row"><span>Raio equatorial</span><span>1 188 km</span></div>
+      <div class="pc-row"><span>Incl. axial</span><span>122,5° (rotação retrógrada)</span></div>
+      <div class="pc-row"><span>Luas</span><span>5 — Caronte · Nix · Hidra · Estige · Kerberos</span></div>
+      <div class="pc-fact">Plutão e Caronte formam um sistema binário — ambos sempre mostram a mesma face um ao outro (tidal lock mútuo). O coração de Plutão (Tombaugh Regio) é uma planície de nitrogênio congelado do tamanho do Texas.</div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-title"><span class="pc-icon">☀</span><span data-cs="pn9">SOL</span></div>
+      <div class="pc-row"><span>Massa</span><span>1,989 × 10³⁰ kg (99,86% do Sistema)</span></div>
+      <div class="pc-row"><span>Tipo espectral</span><span>G2V (anã amarela)</span></div>
+      <div class="pc-row"><span>Rotação (equador)</span><span>25,38 dias</span></div>
+      <div class="pc-row"><span>Temp. superfície</span><span>5.778 K (coroa: 1–3 MK)</span></div>
+      <div class="pc-row"><span>Raio</span><span>696.340 km (109 Terras)</span></div>
+      <div class="pc-row"><span>Luminosidade</span><span>3,83 × 10²⁶ W</span></div>
+      <div class="pc-row"><span>Composição</span><span>73% H₂ · 25% He · 2% outros</span></div>
+      <div class="pc-row"><span>Idade</span><span>~4,6 bilhões de anos</span></div>
+      <div class="pc-row"><span>Vida restante</span><span>~5 bilhões de anos (sequência principal)</span></div>
+      <div class="pc-fact">O Sol converte 600 milhões de toneladas de hidrogênio em hélio por segundo via fusão nuclear. A luz solar leva 8 minutos e 20 segundos para chegar à Terra, mas ~100.000 anos para sair do núcleo até a superfície.</div>
+    </div>
+
+  </div><!-- /pg -->
+
+  <div class="cs-hr"></div>
+  <h2 class="cs-h2" data-cs="s4h">A FÍSICA POR TRÁS</h2>
+  <p class="cs-p" data-cs="s4p1">O simulador implementa <strong>gravitação N-body O(n²)</strong>: a cada passo de física, todos os N×(N-1)/2 pares de corpos calculam a força gravitacional mútua pela Lei de Newton — F = G·m₁·m₂/r². Um fator de suavização ε²=0,5 é somado ao denominador para evitar forças infinitas quando dois corpos se aproximam demais.</p>
+  <p class="cs-p" data-cs="s4p2">As <strong>órbitas iniciais</strong> são calculadas com a <em>equação vis-viva</em>: v = √(G·M·(2/r − 1/a)), onde a é o semieixo maior real de cada planeta. Isso garante órbitas elípticas estáveis desde o primeiro frame. A inclinação orbital de cada planeta é respeitada através da decomposição do vetor de velocidade usando o normal do plano orbital.</p>
+  <p class="cs-p" data-cs="s4p3">A <strong>iluminação</strong> usa <em>Three.js PointLight com decay=2</em>, que implementa a Lei do Inverso do Quadrado fisicamente correta. A exposição ACES Filmic Tonemapping evita saturação excessiva preservando detalhes tanto nas regiões próximas ao Sol quanto nas zonas externas escuras.</p>
+  <p class="cs-p" data-cs="s4p4">As <strong>luas</strong> são inicializadas com velocidade kepleriana calculada pela esfera de Hill de cada planeta — r_Hill = a·(m/3M)^(1/3). Luas que escapam da esfera de influência são ejetadas. O <strong>cinturão de asteroides</strong> (2,2–3,2 UA) e os <strong>anéis planetários</strong> usam InstancedMesh do Three.js para renderizar milhares de partículas sem custo de física individual, cada uma com velocidade angular kepleriana própria.</p>
+
+  <div class="cs-hr"></div>
+  <h2 class="cs-h2" data-cs="s5h">TECNOLOGIAS UTILIZADAS</h2>
+  <p class="cs-p" data-cs="s5p1"><strong>Three.js r128</strong> — biblioteca WebGL 3D utilizada para toda a renderização: geometrias esféricas e icosaédricas, sistema de materiais físicos (MeshStandardMaterial), iluminação com decaimento quadrático (PointLight), câmera perspectiva, OrbitControls para navegação, PointerLock para modo voo livre, Sprites para labels e InstancedMesh para os cinturões e anéis de partículas.</p>
+  <p class="cs-p" data-cs="s5p2"><strong>WebGL 2.0</strong> — renderização em tempo real acelerada por GPU com ACES Filmic Tonemapping e pixel ratio adaptativo (até 1.5×) para balancear qualidade e performance. O simulador roda fluentemente em hardware moderno mesmo com mais de 200 corpos físicos simultâneos.</p>
+  <p class="cs-p" data-cs="s5p3"><strong>JavaScript Puro (Vanilla)</strong> — sem frameworks. Todo o sistema de física N-body, integração numérica (método de Euler simplético com substeps), gestão de colisões por fusão conservando momentum, sistema de temperatura termodinâmica, controles de UI, internacionalização (PT/EN/ES) e gerenciamento de estado foram implementados do zero em JavaScript moderno (ES6+).</p>
+  <p class="cs-p" data-cs="s5p4"><strong>Dados astronômicos reais</strong> — massas, raios, excentricidades, inclinações axiais e orbitais obtidos do NASA/JPL Horizons System e do Planetary Fact Sheet da NASA. As 131 luas incluem grupos de irregulares retrógradas de Júpiter (Ananke, Carme, Pasifae), o sistema binário Plutão-Caronte, e os pastores de anel de Saturno (Pan, Atlas, Prometeu, Pandora).</p>
+  <div class="tech-row">
+    <span class="tech-badge">Three.js r128</span><span class="tech-badge">WebGL 2.0</span>
+    <span class="tech-badge">JavaScript ES6+</span><span class="tech-badge">N-Body Gravitacional</span>
+    <span class="tech-badge">Euler Simpletíco</span><span class="tech-badge">Vis-Viva Orbital</span>
+    <span class="tech-badge">ACES Filmic Tone</span><span class="tech-badge">InstancedMesh</span>
+    <span class="tech-badge">OrbitControls</span><span class="tech-badge">PointerLock API</span>
+    <span class="tech-badge">NASA/JPL Data</span><span class="tech-badge">Hill Sphere</span>
+  </div>
+
+  <div class="cs-hr"></div>
+  <h2 class="cs-h2" data-cs="s6h">CORPOS ESPAWNÁVEIS</h2>
+  <p class="cs-p" data-cs="s6p1">Além dos planetas do Sistema Solar, você pode criar qualquer tipo de corpo celeste usando o botão <strong>SPAWN</strong>. Cada tipo tem propriedades físicas realistas e interage com todos os outros via gravidade.</p>
+  <div class="cg">
+    <div class="cr"><span class="ck" style="color:#ff9944">Gigante V.</span><span class="cv">Estrela em fase de expansão — raio 50–200× solar, temp. 3.500–5.000 K, luminosidade extrema</span></div>
+    <div class="cr"><span class="ck" style="color:#aaddff">Anã Branca</span><span class="cv">Núcleo estelar colapsado — densidade ~10⁶ g/cm³, tamanho terrestre, massa solar. Glow azul-branco</span></div>
+    <div class="cr"><span class="ck" style="color:#88ccff">Nêutrons</span><span class="cv">Objeto ultra-denso — ~1,4 massas solares em 10 km de raio. Jatos polares visíveis no simulador</span></div>
+    <div class="cr"><span class="ck" style="color:#cc44ff">Buracos N.</span><span class="cv">Singularidade gravitacional — absorve asteroides, deforma a grade de espaço-tempo, acretion disc laranja</span></div>
+    <div class="cr"><span class="ck" style="color:#ff8844">Anã Marrom</span><span class="cv">Objeto subestelar — massa entre 13 e 80 Júpiteres, não atinge fusão nuclear sustentada</span></div>
+    <div class="cr"><span class="ck" style="color:#7799ff">Nebulosa</span><span class="cv">Nuvem de gás e poeira — puramente visual, sem física de colisão, cria contexto visual espetacular</span></div>
+  </div>
+
+  <div class="ad-w">
+    <ins class="adsbygoogle" style="display:block;text-align:center" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-1832514774375359" data-ad-slot="auto"></ins>
+    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+  </div>
+
+</div><!-- /cs-inner -->
+</section>
+
+<script>
+// Scroll arrow hides after user scrolls past sim
+window.addEventListener('scroll',function(){
+  const dn=document.getElementById('scrollDown');
+  const up=document.getElementById('scrollUp');
+  const past=window.scrollY>window.innerHeight*0.55;
+  if(dn)dn.classList.toggle('hidden',past);
+  if(up)up.style.display=past?'flex':'none';
+},{passive:true});
+
+// Content i18n
+const _CS={
+  en:{
+    s1h:'WHAT IS UNIVERSIM',
+    s1p1:'UniverSim is a real-time N-body gravitational simulator built with WebGL and Three.js. Every body exerts gravitational force on every other — calculated each frame with Newtons Law with ε²=0.5 softening to avoid numerical singularities in close encounters.',
+    s1p2:'The complete Solar System is modeled with real data: masses, radii, axial tilts, orbital eccentricities, plane inclinations, and rotation periods for all planets and 131+ moons. The asteroid belt (2.2–3.2 AU) is 3,000 Keplerian particles. Saturn and Uranus have particle rings with independent orbital motion.',
+    s1p3:'Physical lighting uses the Inverse Square Law (decay=2 in Three.js). Mercury receives ~10.6× more irradiance than Earth; Neptune receives only 0.11% of what Earth receives from the Sun.',
+    s2h:'HOW TO USE', s2c:'CAMERA &amp; NAVIGATION', s2t:'SIMULATION CONTROLS',
+    k1:'Drag to orbit the camera around the focal point',k2:'Zoom in / out',
+    k3k:'Right btn',k3:'Pan — shift the camera focal point laterally',
+    k4:'Select body — opens info and edit panel',k5:'Double-click — focus and follow body',
+    k6:'Free Fly — mouse aims, WASD moves, Q/E altitude, SHIFT 5× speed',
+    t1:'Pause / resume — freezes all physics and animation',t2:'Restart full Solar System with random positions',
+    t3:'Orbital trails — shows path traveled by each body',t4:'Body names — proportional labels',
+    t5:'Space-time curvature grid — deformed by massive bodies',t6:'Time multiplier: 0× to 300×',
+    t7:'Spawn new body — planet, star, red giant, white dwarf, black hole, asteroid, comet, nebula',
+    t8:'Select a star and transform it into another stellar type',
+    s3h:'SOLAR SYSTEM PLANET DATA',
+    pn0:'MERCURY',pn1:'VENUS',pn2:'EARTH',pn3:'MARS',pn4:'JUPITER',pn5:'SATURN',pn6:'URANUS',pn7:'NEPTUNE',pn8:'PLUTO',pn9:'SUN',
+    lm:'Mass',lo:'Orbital period',lr:'Sidereal rotation',lt:'Avg temp.',ld:'Avg dist. Sun',le:'Eccentricity',lri:'Equatorial radius',la:'Axial tilt',ll:'Moons',
+    pf0:'Mercury has the longest solar day in the Solar System: 176 Earth days. The extreme temperature difference between day (+430°C) and night (−180°C) occurs because it has no significant atmosphere.',
+    s4h:'THE PHYSICS',
+    s4p1:'The simulator implements <strong>O(n²) N-body gravitation</strong>: at each physics step, all N×(N-1)/2 pairs compute mutual gravitational force via Newtons Law — F = G·m₁·m₂/r². A softening factor ε²=0.5 is added to avoid infinite forces in close approaches.',
+    s4p2:'<strong>Initial orbits</strong> use the <em>vis-viva equation</em>: v = √(G·M·(2/r − 1/a)), where a is each planets real semi-major axis. This ensures stable elliptical orbits from frame one. Orbital inclination uses velocity vector decomposition with the orbital plane normal.',
+    s4p3:'<strong>Lighting</strong> uses <em>Three.js PointLight with decay=2</em> — physically correct Inverse Square Law. ACES Filmic Tonemapping prevents overexposure while preserving detail from the bright inner solar system to the dark outer reaches.',
+    s4p4:'<strong>Moons</strong> initialize with Keplerian velocity from each planets Hill sphere: r_Hill = a·(m/3M)^(1/3). Escaped moons are ejected. The <strong>asteroid belt</strong> and <strong>planetary rings</strong> use Three.js InstancedMesh to render thousands of particles, each with its own Keplerian angular velocity.',
+    s5h:'TECHNOLOGIES',
+    s5p1:'<strong>Three.js r128</strong> — 3D WebGL library for all rendering: spherical and icosahedral geometries, physical materials (MeshStandardMaterial), quadratic decay lighting (PointLight), perspective camera, OrbitControls, PointerLock for free fly, Sprites for labels, and InstancedMesh for particle belts and rings.',
+    s5p2:'<strong>WebGL 2.0</strong> — GPU-accelerated real-time rendering with ACES Filmic Tonemapping and adaptive pixel ratio (up to 1.5×). Runs smoothly on modern hardware even with 200+ simultaneous physical bodies.',
+    s5p3:'<strong>Vanilla JavaScript</strong> — no frameworks. N-body physics, symplectic Euler integration with substeps, momentum-conserving collision merging, thermodynamic temperature, UI controls, i18n (PT/EN/ES), and state management all built from scratch in modern ES6+.',
+    s5p4:'<strong>Real astronomical data</strong> — masses, radii, eccentricities, axial and orbital inclinations from NASA/JPL Horizons and NASA Planetary Fact Sheet. 131 moons including Jupiters retrograde irregular groups (Ananke, Carme, Pasiphae) and Saturns ring shepherds (Pan, Atlas, Prometheus, Pandora).',
+    s6h:'SPAWNABLE BODIES',
+    s6p1:'Beyond Solar System planets, you can create any type of celestial body using the <strong>SPAWN</strong> button. Each type has realistic physical properties and interacts gravitationally with all others.',
+  },
+  es:{
+    s1h:'QUÉ ES UNIVERSIM',
+    s1p1:'UniverSim es un simulador gravitacional N-body en tiempo real construido con WebGL y Three.js. Cada cuerpo ejerce fuerza gravitacional sobre todos los demás — calculada cada fotograma con la Ley de Newton y suavizado ε²=0,5 para evitar singularidades numéricas.',
+    s1p2:'El Sistema Solar completo está modelado con datos reales: masas, radios, inclinaciones axiales, excentricidades, inclinaciones de plano y períodos de rotación de todos los planetas y más de 131 lunas. El cinturón de asteroides (2,2–3,2 UA) son 3.000 partículas keplerianas.',
+    s1p3:'La iluminación física usa la Ley del Inverso del Cuadrado (decay=2 en Three.js). Mercurio recibe ~10,6× más irradiancia que la Tierra; Neptuno recibe solo el 0,11% de lo que recibe la Tierra.',
+    s2h:'CÓMO USAR',s2c:'CÁMARA Y NAVEGACIÓN',s2t:'CONTROLES DE SIMULACIÓN',
+    k1:'Arrastrar para orbitar la cámara',k2:'Zoom in / out',k3k:'Bot. der.',k3:'Pan — desplazar cámara',
+    k4:'Seleccionar cuerpo — abre panel de info y edición',k5:'Doble clic — enfocar y seguir cuerpo',
+    k6:'Vuelo Libre — ratón apunta, WASD mueve, Q/E altura, SHIFT 5× velocidad',
+    t1:'Pausar / reanudar simulación',t2:'Reiniciar Sistema Solar completo',
+    t3:'Rastros orbitales',t4:'Nombres de cuerpos',t5:'Malla de curvatura espacio-tiempo',
+    t6:'Multiplicador de tiempo: 0× a 300×',t7:'Crear cuerpo nuevo',t8:'Transformar estrella seleccionada',
+    s3h:'DATOS DE PLANETAS DEL SISTEMA SOLAR',
+    pn0:'MERCURIO',pn1:'VENUS',pn2:'TIERRA',pn3:'MARTE',pn4:'JÚPITER',pn5:'SATURNO',pn6:'URANO',pn7:'NEPTUNO',pn8:'PLUTÓN',pn9:'SOL',
+    lm:'Masa',lo:'Período orbital',lr:'Rotación sideral',lt:'Temp. media',ld:'Dist. media Sol',le:'Excentricidad',lri:'Radio ecuatorial',la:'Inc. axial',ll:'Lunas',
+    pf0:'Mercurio tiene el día solar más largo del Sistema Solar: 176 días terrestres. La diferencia extrema de temperatura entre día (+430°C) y noche (−180°C) ocurre porque no tiene atmósfera significativa.',
+    s4h:'LA FÍSICA',s4p1:'El simulador implementa <strong>gravitación N-body O(n²)</strong>: en cada paso físico, todos los pares calculan la fuerza gravitacional mutua — F = G·m₁·m₂/r². Un factor de suavizado ε²=0,5 evita fuerzas infinitas en encuentros cercanos.',
+    s4p2:'<strong>Las órbitas iniciales</strong> usan la <em>ecuación vis-viva</em>: v = √(G·M·(2/r − 1/a)). La inclinación orbital usa descomposición del vector velocidad con la normal del plano orbital.',
+    s4p3:'<strong>La iluminación</strong> usa <em>Three.js PointLight con decay=2</em> — Ley del Inverso del Cuadrado físicamente correcta. ACES Filmic Tonemapping preserva detalle en todo el rango dinámico.',
+    s4p4:'<strong>Las lunas</strong> se inicializan con velocidad kepleriana de la esfera de Hill: r_Hill = a·(m/3M)^(1/3). El <strong>cinturón de asteroides</strong> y <strong>anillos</strong> usan InstancedMesh de Three.js.',
+    s5h:'TECNOLOGÍAS',s5p1:'<strong>Three.js r128</strong> — librería WebGL 3D para toda la renderización con materiales físicos, iluminación con decaimiento cuadrático, OrbitControls, PointerLock y InstancedMesh.',
+    s5p2:'<strong>WebGL 2.0</strong> — renderización en tiempo real acelerada por GPU con ACES Filmic Tonemapping.',
+    s5p3:'<strong>JavaScript Puro</strong> — sin frameworks. Física N-body, integración de Euler simpléctica, colisiones con conservación de momento, todo desde cero en ES6+.',
+    s5p4:'<strong>Datos astronómicos reales</strong> de NASA/JPL Horizons y NASA Planetary Fact Sheet. 131 lunas con datos reales de órbita.',
+    s6h:'CUERPOS CREABLES',s6p1:'Además de los planetas, puedes crear cualquier tipo de cuerpo celeste con el botón <strong>CREAR</strong>.',
+  }
+};
+function _applyCS(l){
+  const T=_CS[l]||_CS.en;
+  document.querySelectorAll('[data-cs]').forEach(el=>{
+    const k=el.getAttribute('data-cs');
+    if(T[k]!==undefined)el.innerHTML=T[k];
+  });
+}
+const _origSL=window.setLang;
+window.setLang=function(l){if(_origSL)_origSL(l);_applyCS(l);};
+window.addEventListener('DOMContentLoaded',function(){
+  try{
+    const saved=localStorage.getItem('usim_lang');
+    const br=(navigator.language||'').toLowerCase();
+    const l=saved||(br.startsWith('pt')?'pt':br.startsWith('es')?'es':'en');
+    _applyCS(l);
+  }catch(e){}
+});
+</script>
+
 </body>
 </html>
