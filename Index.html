@@ -14,7 +14,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1832514774375359" crossorigin="anonymous"></script>
 <meta name="google-adsense-account" content="ca-pub-1832514774375359">
-<meta property="og:image" content="https://universim.io/thumb.png">
+<meta property="og:image" content="https://mateusbrta.github.io/thumb.png">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="720">
 <meta name="google-site-verification" content="CskOu2VRPj3SPlNnoxiZamumyYB5vuE_NAL1jjg2HGY" />
@@ -47,28 +47,28 @@ canvas{display:block}
 .bn{font-size:12px;color:#9bc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bs{font-size:11px;color:#456}
 .ac{font-size:11px;color:#345;padding:5px 12px}
-#sp{position:fixed;right:0;top:48px;width:235px;background:rgba(0,4,14,.93);backdrop-filter:blur(6px);border-left:1px solid rgba(60,120,255,.1);padding:11px;z-index:80;display:none}
+#sp{position:fixed;right:0;top:48px;width:260px;background:rgba(0,4,14,.93);backdrop-filter:blur(6px);border-left:1px solid rgba(60,120,255,.1);padding:14px;z-index:80;display:none;overflow-y:auto;max-height:calc(100vh - 82px);}
 #sp .cx{position:absolute;top:7px;right:7px;width:17px;height:17px;background:rgba(255,60,60,.08);border:1px solid rgba(255,60,60,.14);border-radius:2px;color:#f77;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 #sp .cx:hover{background:rgba(255,60,60,.2)}
-#sN{font-size:14px;color:#6ef;letter-spacing:1px;margin-bottom:10px;padding-right:22px}
-.sr{display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px}.sk{color:#345}.sv{color:#9bc}
+#sN{font-size:15px;color:#6ef;letter-spacing:1px;margin-bottom:10px;padding-right:22px}
+.sr{display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px}.sk{color:#345}.sv{color:#9bc}
 .sep{height:1px;background:rgba(60,120,255,.07);margin:6px 0}
-.fl{font-size:11px;color:#456;letter-spacing:1px;display:block;margin-bottom:3px}
-.fi{width:100%;padding:7px 8px;margin-bottom:6px;background:rgba(0,10,30,.85);border:1px solid rgba(60,120,255,.13);color:#9bc;border-radius:2px;font:8px 'Courier New'}
+.fl{font-size:12px;color:#456;letter-spacing:1px;display:block;margin-bottom:3px}
+.fi{width:100%;padding:7px 8px;margin-bottom:6px;background:rgba(0,10,30,.85);border:1px solid rgba(60,120,255,.13);color:#9bc;border-radius:2px;font:12px 'Courier New'}
 .fi:focus{outline:none;border-color:rgba(60,150,255,.36)}
 .pb{display:flex;gap:4px;margin-top:2px}.pb .tb{flex:1;text-align:center}
 .dbt{color:#f77!important;border-color:rgba(255,70,70,.18)!important}
 .vr{display:flex;gap:3px;margin-bottom:3px}
-.vr input{flex:1;padding:3px 4px;background:rgba(0,14,7,.85);border:1px solid rgba(40,180,100,.15);color:#5db;border-radius:2px;font:8px 'Courier New'}
+.vr input{flex:1;padding:4px 5px;background:rgba(0,14,7,.85);border:1px solid rgba(40,180,100,.15);color:#5db;border-radius:2px;font:12px 'Courier New'}
 .av{width:100%;margin-top:2px}
 /* transform select */
 #tfPanel{margin-top:5px}
-#tfPanel select{width:100%;padding:7px 8px;margin-bottom:6px;background:rgba(0,10,30,.9);border:1px solid rgba(60,120,255,.14);color:#9bc;border-radius:2px;font:8px 'Courier New'}
+#tfPanel select{width:100%;padding:7px 8px;margin-bottom:6px;background:rgba(0,10,30,.9);border:1px solid rgba(60,120,255,.14);color:#9bc;border-radius:2px;font:12px 'Courier New'}
 /* spawn modal */
 #sm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,5,18,.97);border:1px solid rgba(60,150,255,.2);border-radius:4px;padding:16px;z-index:200;display:none;min-width:258px;backdrop-filter:blur(10px)}
 #sm h3{font-size:14px;color:#5af;letter-spacing:2px;margin-bottom:10px;font-weight:400}
-#sm label{font-size:11px;color:#456;letter-spacing:1px;display:block;margin-bottom:3px}
-#sm input,#sm select{width:100%;padding:7px 8px;margin-bottom:6px;background:rgba(0,10,30,.9);border:1px solid rgba(60,120,255,.15);color:#9bc;border-radius:2px;font:8px 'Courier New'}
+#sm label{font-size:12px;color:#456;letter-spacing:1px;display:block;margin-bottom:3px}
+#sm input,#sm select{width:100%;padding:7px 8px;margin-bottom:6px;background:rgba(0,10,30,.9);border:1px solid rgba(60,120,255,.15);color:#9bc;border-radius:2px;font:12px 'Courier New'}
 #sm select option{background:#000d20}
 .mb{display:flex;gap:6px;margin-top:3px}.mb .tb{flex:1;text-align:center;padding:6px}
 #ov{position:fixed;inset:0;z-index:199;display:none}
@@ -360,7 +360,6 @@ const LANGS = {
     placeOnMap:'PLACE ON MAP', cancel:'CANCEL',
     spawnHintTxt:'CLICK IN SPACE TO PLACE · ESC cancels',
     hintTxt:'<b>V</b> Free fly &nbsp;<b>WASD</b> Move<br><b>Q/E</b> Altitude &nbsp;<b>SHIFT</b> Fast',
-    // Tutorial
     tutTitle:'UNIVERSE SIMULATOR',
     tutSub:'INTERACTIVE N-BODY GRAVITATIONAL SIMULATOR',
     tutAbout:'About',
@@ -384,22 +383,38 @@ const LANGS = {
     tutCollDesc:'Planets merge conserving momentum. Asteroids are absorbed. Counter in the footer.',
     tutStart:'GOT IT — START SIMULATION',
     tutClose:'CLOSE ×',
-    // dynamic
     fragment:'Frag', astKbo:'ast/KBO', more:'MORE', aboutLink:'About Us', privacyLink:'Privacy Policy', termsLink:'Terms of Service', contactLink:'Contact',
-    typeNames:{rocky:'Rocky Planet',gas:'Gas Planet',ice:'Ice Planet',sun:'Star',giant:'Red Giant',whitedwarf:'White Dwarf',browndwarf:'Brown Dwarf',neutron:'Neutron Star',blackhole:'Black Hole',moon:'Moon',asteroid:'Asteroid',comet:'Comet',nebula:'Nebula'},
+    typeNames:{rocky:'Rocky Planet',gas:'Gas Planet',ice:'Ice Planet',earth:'Rocky Planet',sun:'Star',giant:'Red Giant',whitedwarf:'White Dwarf',browndwarf:'Brown Dwarf',neutron:'Neutron Star',blackhole:'Black Hole',moon:'Moon',asteroid:'Asteroid',comet:'Comet',nebula:'Nebula'},
+    bodyNames:{
+      'Sol':'Sun','Mercurio':'Mercury','Venus':'Venus','Terra':'Earth','Marte':'Mars',
+      'Jupiter':'Jupiter','Saturno':'Saturn','Urano':'Uranus','Netuno':'Neptune','Plutao':'Pluto',
+      'Lua':'Moon','Fobos':'Phobos','Deimos':'Deimos','Io':'Io','Europa':'Europa',
+      'Ganimedes':'Ganymede','Calisto':'Callisto','Metis':'Metis','Adrasteia':'Adrastea',
+      'Amalteia':'Amalthea','Tebe':'Thebe','Themisto':'Themisto','Leda':'Leda',
+      'Himalia':'Himalia','Lisiteia':'Lysithea','Elara':'Elara','Pandia':'Pandia',
+      'Ersa':'Ersa','Ananke':'Ananke','Praxidike':'Praxidike','Ioke':'Ioke',
+      'Carme':'Carme','Taigete':'Taygete','Callirroe':'Callirrhoe','Pasifae':'Pasiphae',
+      'Sinope':'Sinope','Hegemone':'Hegemone','Valetudo':'Valetudo',
+      'Mimas':'Mimas','Encelado':'Enceladus','Tethys':'Tethys','Dione':'Dione',
+      'Reia':'Rhea','Tita':'Titan','Hiperion':'Hyperion','Japeto':'Iapetus','Febe':'Phoebe',
+      'Miranda':'Miranda','Ariel':'Ariel','Umbriel':'Umbriel','Titania':'Titania','Oberon':'Oberon',
+      'Tritao':'Triton','Nereida':'Nereid','Proteu':'Proteus',
+      'Caronte':'Charon','Estige':'Styx','Nix':'Nix','Kerberos':'Kerberos','Hidra':'Hydra',
+      'Ceres':'Ceres','Vesta':'Vesta','Eris':'Eris','Makemake':'Makemake',
+    },
   },
   pt:{
     orbit:'ORBITAR', freeFly:'VOO LIVRE', trails:'RASTROS', grid:'GRADE', labels:'LABELS',
     spawn:'+ SPAWNAR', pause:'PAUSA', resume:'RETOMAR', reset:'RESET',
-    bodies:'Corpos', time:'Tempo', collisions:'Colisoes',
+    bodies:'Corpos', time:'Tempo', collisions:'Colisões',
     type:'Tipo', mass:'Massa', temp:'Temp', vel:'Vel', distSun:'Dist. Sol',
     massLabel:'MASSA (×10²⁴ kg)', radiusLabel:'RAIO VISUAL', tempLabel:'TEMPERATURA (°C)',
     colorLabel:'Cor (hex)', orbitalVel:'Velocidade Orbital',
     save:'SALVAR', delete:'EXCLUIR', transformInto:'TRANSFORMAR EM', transform:'TRANSFORMAR',
-    launch:'LANCAR', applyVel:'APLICAR VEL', slingshot:'ESTILINGAR ×2', orbitBody:'ORBITAR ESTE CORPO',
+    launch:'LANÇAR', applyVel:'APLICAR VEL', slingshot:'ESTILINGUE ×2', orbitBody:'ORBITAR ESTE CORPO',
     giant:'Gigante Vermelha', whitedwarf:'Anã Branca', neutron:'Estrela de Nêutrons',
     blackhole:'Buraco Negro', browndwarf:'Anã Marrom',
-    spawnBody:'SPAWNAR CORPO', name:'Nome',
+    spawnBody:'CRIAR CORPO', name:'Nome',
     planets:'Planetas', stars:'Estrelas', others:'Outros',
     rocky:'Planeta Rochoso', gaseous:'Planeta Gasoso', iceplanet:'Planeta de Gelo', sunStar:'Estrela Solar',
     moon:'Lua', asteroid:'Asteroide', comet:'Cometa', nebula:'Nebulosa',
@@ -419,9 +434,9 @@ const LANGS = {
     tutBodies:'Corpos e Física',
     tutEdit:'EDITAR', tutEditDesc:'Selecione um corpo → edite massa, raio e temperatura no painel direito → SALVAR.',
     tutTransform:'TRANSFORMAR', tutTransformDesc:'Selecione uma estrela → use TRANSFORMAR EM para criar Gigante Vermelha, Anã Branca, Buraco Negro, etc.',
-    tutLaunch:'LANÇAR', tutLaunchDesc:'Defina Vx/Vy/Vz → APLICAR VEL. Use ESTILINGAR ×2 para assistência gravitacional.',
+    tutLaunch:'LANÇAR', tutLaunchDesc:'Defina Vx/Vy/Vz → APLICAR VEL. Use ESTILINGUE ×2 para assistência gravitacional.',
     tutTempDesc:'Acima de 500°C: emissão vermelha. Acima de 4000°C: branca. Cada planeta converge para equilíbrio real com o sol.',
-    tutSpawn:'Spawnar Novos Corpos',
+    tutSpawn:'Criar Novos Corpos',
     tutSpawnDesc:'Clique <b>+ SPAWNAR</b>, configure tipo (planeta, estrela, anã branca, buraco negro, nebulosa…), depois <b>POSICIONAR NO MAPA</b> e clique em qualquer ponto do espaço. <span class="kb">ESC</span> cancela.',
     tutControls:'Controles',
     tutTimeDesc:'Slider T: 0× a 30×. Afeta física, rastros E rotação dos planetas.',
@@ -431,7 +446,24 @@ const LANGS = {
     tutStart:'ENTENDIDO — INICIAR SIMULAÇÃO',
     tutClose:'FECHAR ×',
     fragment:'Frag', astKbo:'ast/KBO', more:'MAIS', aboutLink:'Sobre Nós', privacyLink:'Política de Privacidade', termsLink:'Termos de Serviço', contactLink:'Contato',
-    typeNames:{rocky:'Planeta Rochoso',gas:'Planeta Gasoso',ice:'Planeta de Gelo',sun:'Estrela',giant:'Gigante Vermelha',whitedwarf:'Anã Branca',browndwarf:'Anã Marrom',neutron:'Estrela de Nêutrons',blackhole:'Buraco Negro',moon:'Lua',asteroid:'Asteroide',comet:'Cometa',nebula:'Nebulosa'},
+    typeNames:{rocky:'Planeta Rochoso',gas:'Planeta Gasoso',ice:'Planeta de Gelo',earth:'Planeta Rochoso',sun:'Estrela',giant:'Gigante Vermelha',whitedwarf:'Anã Branca',browndwarf:'Anã Marrom',neutron:'Estrela de Nêutrons',blackhole:'Buraco Negro',moon:'Lua',asteroid:'Asteroide',comet:'Cometa',nebula:'Nebulosa'},
+    bodyNames:{
+      'Sol':'Sol','Mercurio':'Mercúrio','Venus':'Vênus','Terra':'Terra','Marte':'Marte',
+      'Jupiter':'Júpiter','Saturno':'Saturno','Urano':'Urano','Netuno':'Netuno','Plutao':'Plutão',
+      'Lua':'Lua','Fobos':'Fobos','Deimos':'Deimos','Io':'Io','Europa':'Europa',
+      'Ganimedes':'Ganimedes','Calisto':'Calisto','Metis':'Metis','Adrasteia':'Adrasteia',
+      'Amalteia':'Amalteia','Tebe':'Tebe','Themisto':'Themisto','Leda':'Leda',
+      'Himalia':'Himalia','Lisiteia':'Lisiteia','Elara':'Elara','Pandia':'Pandia',
+      'Ersa':'Ersa','Ananke':'Ananke','Praxidike':'Praxidike','Ioke':'Ioke',
+      'Carme':'Carme','Taigete':'Taigete','Callirroe':'Callirroe','Pasifae':'Pasifae',
+      'Sinope':'Sinope','Hegemone':'Hegemone','Valetudo':'Valetudo',
+      'Mimas':'Mimas','Encelado':'Encelado','Tethys':'Tethys','Dione':'Dione',
+      'Reia':'Reia','Tita':'Titã','Hiperion':'Hiperião','Japeto':'Japeto','Febe':'Febe',
+      'Miranda':'Miranda','Ariel':'Ariel','Umbriel':'Umbriel','Titania':'Titânia','Oberon':'Oberon',
+      'Tritao':'Tritão','Nereida':'Nereida','Proteu':'Proteu',
+      'Caronte':'Caronte','Estige':'Estige','Nix':'Nix','Kerberos':'Cérbero','Hidra':'Hidra',
+      'Ceres':'Ceres','Vesta':'Vesta','Eris':'Éris','Makemake':'Makemake',
+    },
   },
   es:{
     orbit:'ORBITAR', freeFly:'VUELO LIBRE', trails:'RASTROS', grid:'MALLA', labels:'LABELS',
@@ -451,16 +483,16 @@ const LANGS = {
     autoOrbit:'Auto — orbitar el sol', manualOrbit:'Manual — definir después',
     placeOnMap:'COLOCAR EN MAPA', cancel:'CANCELAR',
     spawnHintTxt:'CLIC EN EL ESPACIO PARA COLOCAR · ESC cancela',
-    hintTxt:'<b>V</b> Vuelo libre &nbsp;<b>WASD</b> Mover<br><b>Q/E</b> Altura &nbsp;<b>SHIFT</b> Rápido',
+    hintTxt:'<b>V</b> Vuelo libre &nbsp;<b>WASD</b> Mover<br><b>Q/E</b> Altitud &nbsp;<b>SHIFT</b> Rápido',
     tutTitle:'SIMULADOR DE UNIVERSO',
     tutSub:'SIMULADOR GRAVITACIONAL N-CUERPOS INTERACTIVO',
-    tutAbout:'Sobre el Proyecto',
-    tutAboutTxt:'Simulación física N-body en tiempo real con proporciones reales de tamaño y distancia. Todos los cuerpos ejercen gravedad entre sí. Las lunas orbitan con velocidades keplerianas según la esfera de Hill. Saturno y Urano tienen anillos con partículas en órbita independiente.',
+    tutAbout:'Acerca del Proyecto',
+    tutAboutTxt:'Simulación física N-body en tiempo real con proporciones reales de tamaño y distancia. Todos los cuerpos ejercen gravedad entre sí. Las lunas orbitan con velocidades keplerianas de la esfera de Hill. Saturno y Urano tienen anillos con partículas en órbita independiente. La temperatura de los planetas converge al equilibrio termodinámico real.',
     tutCamera:'Cámara',
-    tutOrbitMode:'MODO ORBITAR', tutOrbitDesc:'Clic y arrastrar para rotar. Scroll para zoom. Botón derecho para paneo.',
-    tutFreeFly:'VUELO LIBRE', tutFreeFlyDesc:'Pulsa <span class="kb">V</span> para entrar. El ratón apunta la cámara. <span class="kb">W</span><span class="kb">A</span><span class="kb">S</span><span class="kb">D</span> mueve, <span class="kb">Q</span><span class="kb">E</span> altura. <span class="kb">SHIFT</span> 5× velocidad.',
+    tutOrbitMode:'MODO ORBITAR', tutOrbitDesc:'Clic y arrastrar para girar. Scroll para zoom. Botón derecho para panorámica.',
+    tutFreeFly:'VUELO LIBRE', tutFreeFlyDesc:'Presiona <span class="kb">V</span> para entrar. El ratón apunta la cámara. <span class="kb">W</span><span class="kb">A</span><span class="kb">S</span><span class="kb">D</span> mueve, <span class="kb">Q</span><span class="kb">E</span> altitud. <span class="kb">SHIFT</span> 5× velocidad.',
     tutFocus:'ENFOCAR CUERPO', tutFocusDesc:'Selecciona un cuerpo → clic en <b>ORBITAR ESTE CUERPO</b>. La cámara lo sigue. O <b>doble clic</b> en la lista lateral.',
-    tutSelect:'SELECCIÓN', tutSelectDesc:'Clic en cualquier cuerpo en el espacio 3D o en la lista lateral. Aparece una línea blanca pulsante encima del cuerpo seleccionado.',
+    tutSelect:'SELECCIÓN', tutSelectDesc:'Clic en cualquier cuerpo en el espacio 3D o en la lista lateral. Una línea blanca pulsante aparece sobre el cuerpo seleccionado.',
     tutBodies:'Cuerpos y Física',
     tutEdit:'EDITAR', tutEditDesc:'Selecciona un cuerpo → edita masa, radio y temperatura en el panel derecho → GUARDAR.',
     tutTransform:'TRANSFORMAR', tutTransformDesc:'Selecciona una estrella → usa TRANSFORMAR EN para crear Gigante Roja, Enana Blanca, Agujero Negro, etc.',
@@ -476,11 +508,30 @@ const LANGS = {
     tutStart:'ENTENDIDO — INICIAR SIMULACIÓN',
     tutClose:'CERRAR ×',
     fragment:'Frag', astKbo:'ast/KBO', more:'MÁS', aboutLink:'Sobre Nosotros', privacyLink:'Política de Privacidad', termsLink:'Términos de Servicio', contactLink:'Contacto',
-    typeNames:{rocky:'Planeta Rocoso',gas:'Planeta Gaseoso',ice:'Planeta de Hielo',sun:'Estrella',giant:'Gigante Roja',whitedwarf:'Enana Blanca',browndwarf:'Enana Marrón',neutron:'Estrella de Neutrones',blackhole:'Agujero Negro',moon:'Luna',asteroid:'Asteroide',comet:'Cometa',nebula:'Nebulosa'},
+    typeNames:{rocky:'Planeta Rocoso',gas:'Planeta Gaseoso',ice:'Planeta de Hielo',earth:'Planeta Rocoso',sun:'Estrella',giant:'Gigante Roja',whitedwarf:'Enana Blanca',browndwarf:'Enana Marrón',neutron:'Estrella de Neutrones',blackhole:'Agujero Negro',moon:'Luna',asteroid:'Asteroide',comet:'Cometa',nebula:'Nebulosa'},
+    bodyNames:{
+      'Sol':'Sol','Mercurio':'Mercurio','Venus':'Venus','Terra':'Tierra','Marte':'Marte',
+      'Jupiter':'Júpiter','Saturno':'Saturno','Urano':'Urano','Netuno':'Neptuno','Plutao':'Plutón',
+      'Lua':'Luna','Fobos':'Fobos','Deimos':'Deimos','Io':'Io','Europa':'Europa',
+      'Ganimedes':'Ganímedes','Calisto':'Calisto','Metis':'Metis','Adrasteia':'Adrastea',
+      'Amalteia':'Amaltea','Tebe':'Tebe','Themisto':'Temisto','Leda':'Leda',
+      'Himalia':'Himalia','Lisiteia':'Lisitea','Elara':'Elara','Pandia':'Pandia',
+      'Ersa':'Ersa','Ananke':'Ananke','Praxidike':'Praxídice','Ioke':'Ioke',
+      'Carme':'Carme','Taigete':'Tígeta','Callirroe':'Calírroe','Pasifae':'Pasífae',
+      'Sinope':'Sinope','Hegemone':'Hegemone','Valetudo':'Valetudo',
+      'Mimas':'Mimas','Encelado':'Encélado','Tethys':'Tetis','Dione':'Dione',
+      'Reia':'Rea','Tita':'Titán','Hiperion':'Hiperión','Japeto':'Japeto','Febe':'Febe',
+      'Miranda':'Miranda','Ariel':'Ariel','Umbriel':'Umbriel','Titania':'Titania','Oberon':'Oberón',
+      'Tritao':'Tritón','Nereida':'Nereida','Proteu':'Proteo',
+      'Caronte':'Caronte','Estige':'Estigia','Nix':'Nix','Kerberos':'Cérbero','Hidra':'Hidra',
+      'Ceres':'Ceres','Vesta':'Vesta','Eris':'Eris','Makemake':'Makemake',
+    },
   }
 };
 
 let _lang='en';
+// Canonical key: always the original PT name used in PLANETS/MOONS arrays
+// We store b._canonName on creation; translation maps from canonical to display name
 window.setLang=function setLang(l){
   _lang=l;
   try{localStorage.setItem('usim_lang',l);}catch(e){}
@@ -506,8 +557,25 @@ window.setLang=function setLang(l){
   _rebuildTutorial(T);
   // Update TYPE_PRE names
   Object.keys(TYPE_PRE).forEach(k=>{if(T.typeNames&&T.typeNames[k])TYPE_PRE[k].n=T.typeNames[k];});
-  // Refresh list to update type labels if open
+  // Rename all bodies using canonical name map
+  if(typeof bodies!=='undefined'&&T.bodyNames){
+    bodies.forEach(b=>{
+      if(!b._canonName) return;
+      const translated=T.bodyNames[b._canonName];
+      if(translated)b.name=translated;
+    });
+  }
+  // Refresh labels so new names show immediately
+  if(typeof bodies!=='undefined'){
+    bodies.forEach(b=>{if(b.labelSpr)b.labelSpr.textContent=b.name;});
+  }
+  // Refresh list + open panel
   _listDirty=true;
+  if(typeof selBody!=='undefined'&&selBody&&!selBody.removed){
+    document.getElementById('sN').textContent=selBody.name.toUpperCase();
+    const tn=T.typeNames&&T.typeNames[selBody.type]?T.typeNames[selBody.type]:selBody.type;
+    document.getElementById('si-ty').textContent=tn;
+  }
 }
 
 function _rebuildTutorial(T){
@@ -573,7 +641,7 @@ const BOOST = 8;
 const G     = 1.8e-3;   // calibrated for AU=6400
 // Sim time calibration: at tMult=1, real seconds → sim days
 const DAYS_PER_SEC = 0.033944; // calibrated: Earth orbit 10753s real at tMult=1 → 365 sim-days
-const SOFT2 = 0.5;
+const SOFT2 = 4.0;
 const M_SUN = 1989000;
 
 // Hill sphere fraction for moon placement
@@ -877,6 +945,7 @@ class Body {
   constructor(o){
     this.id=_bid++;
     this.name=o.n||'Body';
+    this._canonName=o.n||'Body'; // always the original PT canonical name for i18n lookup
     this.type=o.ty||'rocky';
     this.mass=o.m||1;
     this.radius=o.r||BOOST;
@@ -1281,7 +1350,7 @@ function buildSolarSystem(){
   bodies.forEach(b=>{
     if(b===sun)return;
     const r=b.pos.distanceTo(sun.pos);
-    const pd=PLANETS.find(p=>p.n===b.name);
+    const pd=PLANETS.find(p=>p.n===(b._canonName||b.name));
     const a=(pd&&pd.au)?pd.au*AU:r;
     const inc=(pd&&pd.inc)||0;
     if(r<.001)return;
@@ -1420,9 +1489,7 @@ function buildSolarSystem(){
     }
       const ecc = md.ecc || 0;
       const inc = md.inc || 0;
-      const perturb = Math.sin(i * 12.9898 + performance.now() * 0.00002) * moonDist * 0.002;
-      const ang = angleOf[i] + perturb / moonDist;
-      const tidal = Math.sin(performance.now()*0.00003 + i*2.7) * md.ecc * moonDist * 0.0015;
+      const ang = angleOf[i];
 
       // r_actual: position on the ellipse at this true anomaly
       const r_actual = moonDist * (1 - ecc*ecc) / (1 + ecc*Math.cos(ang));
@@ -1466,7 +1533,7 @@ function buildSolarSystem(){
       const velDir = new THREE.Vector3().crossVectors(planeNorm, radDir).normalize();
 
       const retrograde = md.rot < 0 ? -1 : 1;
-      const vPerturb = 1 + Math.sin(i * 7.13) * 0.003;
+      const vPerturb = 1.0;
       b.vel.copy(par.vel).addScaledVector(velDir, vVis * retrograde * vPerturb);
       bodies.push(b);
     });
@@ -1634,11 +1701,13 @@ function openSel(b){
   selBody=b;_listDirty=true;
   document.getElementById('sp').style.display='block';
   document.getElementById('sN').textContent=b.name.toUpperCase();
-  document.getElementById('si-ty').textContent=b.type;
+  const T=LANGS[_lang];
+  const typeName=T&&T.typeNames&&T.typeNames[b.type]?T.typeNames[b.type]:b.type;
+  document.getElementById('si-ty').textContent=typeName;
   document.getElementById('si-ms').textContent=(b.mass>=1?b.mass.toFixed(2):b.mass.toExponential(3))+' ×10²⁴';
   document.getElementById('si-tp').textContent=Math.round(b.temperature)+'°C';
   document.getElementById('si-vl').textContent=b.vel.length().toFixed(4)+' u/s';
-  const sun=bodies.find(x=>x.isStar&&x.name==='Sol')||bodies.find(x=>x.isStar);
+  const sun=bodies.find(x=>x.isStar&&x._canonName==='Sol')||bodies.find(x=>x.isStar);
   document.getElementById('si-ds').textContent=sun?(b.pos.distanceTo(sun.pos)/AU).toFixed(3)+' AU':'--';
   document.getElementById('eM').value=b.mass;
   document.getElementById('eS').value=b.radius.toFixed(2);
@@ -1815,6 +1884,8 @@ window.resetSim=()=>{
   document.getElementById('sp').style.display='none';exitPlaceMode();
   if(window._belt){scene.remove(window._belt.im);window._belt.im.geometry.dispose();window._belt=null;}
   buildSolarSystem();
+  // Re-apply current language so body names are translated after rebuild
+  setLang(_lang);
 };
 document.getElementById('spS').oninput=function(){
   tMult=Math.max(0,parseFloat(this.value)||0);
@@ -1855,7 +1926,7 @@ document.addEventListener('pointerlockchange',()=>{if(document.pointerLockElemen
 //  MAIN LOOP
 // ══════════════════════════════════════════════════════════
 const clock=new THREE.Clock();
-const SUBS=3;
+const SUBS=6;
 let fpsT=0,uiT=0,gridT=0,tempT=0,frameN=0;
 
 buildSolarSystem();
@@ -1872,12 +1943,12 @@ function animate(){
   fpsT+=dt;if(fpsT>.6){document.getElementById('stF').textContent=Math.round(1/Math.max(dt,.001));fpsT=0;}
 
   if(!paused){
-    const step=dt*tMult*15/SUBS;
+    const step=dt*tMult*8/SUBS;
     for(let s=0;s<SUBS;s++) physStep(step);
     checkCollisions();
     simTime+=dt*tMult*DAYS_PER_SEC;  // sim-days
 
-    const sun=bodies.find(b=>b.isStar&&b.name==='Sol')||bodies.find(b=>b.isStar);
+    const sun=bodies.find(b=>b.isStar&&b._canonName==='Sol')||bodies.find(b=>b.isStar);
 
     // Temperature every 8 frames
     tempT+=dt;if(tempT>.12){bodies.forEach(b=>{if(!b.removed&&!b.isAst)b.updTemp(sun,tempT);});tempT=0;}
@@ -1934,7 +2005,7 @@ function animate(){
     if(selBody&&!selBody.removed){
       document.getElementById('si-vl').textContent=selBody.vel.length().toFixed(4)+' u/s';
       document.getElementById('si-tp').textContent=Math.round(selBody.temperature)+'°C';
-      const s2=bodies.find(b=>b.isStar&&b.name==='Sol')||bodies.find(b=>b.isStar);
+      const s2=bodies.find(b=>b.isStar&&b._canonName==='Sol')||bodies.find(b=>b.isStar);
       if(s2)document.getElementById('si-ds').textContent=(selBody.pos.distanceTo(s2.pos)/AU).toFixed(3)+' AU';
     } else if(selBody&&selBody.removed)closeSel();
     // Time display: h:mm:ss → days → years
@@ -2241,7 +2312,7 @@ window.addEventListener('scroll',function(){
   if(up)up.style.display=past?'flex':'none';
 },{passive:true});
 
-// Content i18n
+// Content section i18n (scrollable info below simulator)
 const _CS={
   en:{
     s1h:'WHAT IS UNIVERSIM',
@@ -2254,7 +2325,7 @@ const _CS={
     k4:'Select body — opens info and edit panel',k5:'Double-click — focus and follow body',
     k6:'Free Fly — mouse aims, WASD moves, Q/E altitude, SHIFT 5× speed',
     t1:'Pause / resume — freezes all physics and animation',t2:'Restart full Solar System with random positions',
-    t3:'Orbital trails — shows path traveled by each body',t4:'Body names — proportional labels',
+    t3:'Orbital trails — shows path traveled by each body',t4:'Body names — labels above each body',
     t5:'Space-time curvature grid — deformed by massive bodies',t6:'Time multiplier: 0× to 300×',
     t7:'Spawn new body — planet, star, red giant, white dwarf, black hole, asteroid, comet, nebula',
     t8:'Select a star and transform it into another stellar type',
@@ -2268,12 +2339,44 @@ const _CS={
     s4p3:'<strong>Lighting</strong> uses <em>Three.js PointLight with decay=2</em> — physically correct Inverse Square Law. ACES Filmic Tonemapping prevents overexposure while preserving detail from the bright inner solar system to the dark outer reaches.',
     s4p4:'<strong>Moons</strong> initialize with Keplerian velocity from each planets Hill sphere: r_Hill = a·(m/3M)^(1/3). Escaped moons are ejected. The <strong>asteroid belt</strong> and <strong>planetary rings</strong> use Three.js InstancedMesh to render thousands of particles, each with its own Keplerian angular velocity.',
     s5h:'TECHNOLOGIES',
-    s5p1:'<strong>Three.js r128</strong> — 3D WebGL library for all rendering: spherical and icosahedral geometries, physical materials (MeshStandardMaterial), quadratic decay lighting (PointLight), perspective camera, OrbitControls, PointerLock for free fly, Sprites for labels, and InstancedMesh for particle belts and rings.',
+    s5p1:'<strong>Three.js r128</strong> — 3D WebGL library for all rendering: spherical and icosahedral geometries, physical materials (MeshStandardMaterial), quadratic decay lighting (PointLight), perspective camera, OrbitControls, PointerLock for free fly, and InstancedMesh for particle belts and rings.',
     s5p2:'<strong>WebGL 2.0</strong> — GPU-accelerated real-time rendering with ACES Filmic Tonemapping and adaptive pixel ratio (up to 1.5×). Runs smoothly on modern hardware even with 200+ simultaneous physical bodies.',
     s5p3:'<strong>Vanilla JavaScript</strong> — no frameworks. N-body physics, symplectic Euler integration with substeps, momentum-conserving collision merging, thermodynamic temperature, UI controls, i18n (PT/EN/ES), and state management all built from scratch in modern ES6+.',
     s5p4:'<strong>Real astronomical data</strong> — masses, radii, eccentricities, axial and orbital inclinations from NASA/JPL Horizons and NASA Planetary Fact Sheet. 131 moons including Jupiters retrograde irregular groups (Ananke, Carme, Pasiphae) and Saturns ring shepherds (Pan, Atlas, Prometheus, Pandora).',
     s6h:'SPAWNABLE BODIES',
     s6p1:'Beyond Solar System planets, you can create any type of celestial body using the <strong>SPAWN</strong> button. Each type has realistic physical properties and interacts gravitationally with all others.',
+  },
+  pt:{
+    s1h:'O QUE É O UNIVERSIM',
+    s1p1:'UniverSim é um simulador gravitacional N-body em tempo real construído com WebGL e Three.js. Cada corpo celeste exerce força gravitacional sobre todos os outros — calculada a cada frame com a Lei da Gravitação de Newton, com suavização ε²=0,5 para evitar singularidades numéricas em encontros próximos.',
+    s1p2:'O Sistema Solar completo está modelado com dados reais: massas, raios, inclinações axiais, excentricidades orbitais, inclinações de plano e períodos de rotação de todos os planetas e mais de 131 luas. O cinturão de asteroides (2,2–3,2 UA) é representado por 3.000 partículas keplerianas. Saturno e Urano têm anéis de partículas com movimento orbital independente.',
+    s1p3:'A iluminação física usa a Lei do Inverso do Quadrado (decay=2 no Three.js), reproduzindo exatamente como a irradiância cai com o quadrado da distância. Mercúrio recebe ~10,6× mais irradiância que a Terra; Netuno recebe apenas 0,11% do que a Terra recebe.',
+    s2h:'COMO USAR', s2c:'CÂMERA &amp; NAVEGAÇÃO', s2t:'CONTROLES DA SIMULAÇÃO',
+    k1:'Arrastar para orbitar a câmera em torno do ponto de foco',k2:'Zoom in / out',
+    k3k:'Bot. dir.',k3:'Pan — desloca lateralmente o ponto de foco da câmera',
+    k4:'Selecionar corpo — abre o painel de informações e edição',k5:'Duplo clique — focar e seguir o corpo',
+    k6:'Voo Livre — mouse controla direção, WASD move, Q/E altitude, SHIFT acelera 5×',
+    t1:'Pausar / retomar — congela toda a física e animação',t2:'Reinicia o Sistema Solar completo com posições aleatórias',
+    t3:'Rastros orbitais — mostra o caminho percorrido por cada corpo',t4:'Nomes dos corpos — labels acima de cada corpo',
+    t5:'Grade de curvatura espaço-tempo — deformada por corpos massivos',t6:'Multiplicador de tempo: 0× (parado) até 300×',
+    t7:'Criar novo corpo — planeta, estrela, gigante vermelha, anã branca, buraco negro, asteroide, cometa, nebulosa',
+    t8:'Selecionar uma estrela e transformá-la em outro tipo estelar',
+    s3h:'DADOS DOS PLANETAS DO SISTEMA SOLAR',
+    pn0:'MERCÚRIO',pn1:'VÊNUS',pn2:'TERRA',pn3:'MARTE',pn4:'JÚPITER',pn5:'SATURNO',pn6:'URANO',pn7:'NETUNO',pn8:'PLUTÃO',pn9:'SOL',
+    lm:'Massa',lo:'Período orbital',lr:'Rotação sideral',lt:'Temp. média',ld:'Dist. média Sol',le:'Excentricidade',lri:'Raio equatorial',la:'Incl. axial',ll:'Luas',
+    pf0:'Mercúrio tem o dia solar mais longo do Sistema Solar: 176 dias terrestres. A diferença extrema de temperatura entre dia (+430°C) e noite (−180°C) ocorre por não ter atmosfera significativa.',
+    s4h:'A FÍSICA',
+    s4p1:'O simulador implementa <strong>gravitação N-body O(n²)</strong>: a cada passo físico, todos os N×(N-1)/2 pares calculam a força gravitacional mútua pela Lei de Newton — F = G·m₁·m₂/r². Um fator de suavização ε²=0,5 evita forças infinitas em encontros próximos.',
+    s4p2:'<strong>Órbitas iniciais</strong> usam a <em>equação vis-viva</em>: v = √(G·M·(2/r − 1/a)), onde a é o semi-eixo maior real de cada planeta. Isso garante órbitas elípticas estáveis desde o primeiro frame. A inclinação orbital usa decomposição do vetor velocidade com a normal do plano orbital.',
+    s4p3:'<strong>Iluminação</strong> usa <em>Three.js PointLight com decay=2</em> — Lei do Inverso do Quadrado fisicamente correta. O ACES Filmic Tonemapping evita superexposição preservando detalhes do sistema solar interno ao externo.',
+    s4p4:'<strong>Luas</strong> inicializam com velocidade kepleriana pela esfera de Hill: r_Hill = a·(m/3M)^(1/3). Luas escapadas são ejetadas. O <strong>cinturão de asteroides</strong> e os <strong>anéis planetários</strong> usam InstancedMesh do Three.js para renderizar milhares de partículas, cada uma com sua própria velocidade angular kepleriana.',
+    s5h:'TECNOLOGIAS',
+    s5p1:'<strong>Three.js r128</strong> — biblioteca WebGL 3D para toda a renderização: geometrias esféricas e icosaedrais, materiais físicos (MeshStandardMaterial), iluminação com decaimento quadrático (PointLight), câmera perspectiva, OrbitControls, PointerLock para voo livre e InstancedMesh para cinturões e anéis de partículas.',
+    s5p2:'<strong>WebGL 2.0</strong> — renderização em tempo real acelerada por GPU com ACES Filmic Tonemapping e pixel ratio adaptativo (até 1,5×). Funciona suavemente em hardware moderno mesmo com 200+ corpos físicos simultâneos.',
+    s5p3:'<strong>JavaScript Puro</strong> — sem frameworks. Física N-body, integração de Euler simpléctica com subpassos, fusão de colisões conservando momento, temperatura termodinâmica, controles de UI, i18n (PT/EN/ES) e gerenciamento de estado construídos do zero em ES6+ moderno.',
+    s5p4:'<strong>Dados astronômicos reais</strong> — massas, raios, excentricidades, inclinações axiais e orbitais do NASA/JPL Horizons e NASA Planetary Fact Sheet. 131 luas incluindo grupos retrógrados irregulares de Júpiter (Ananke, Carme, Pasifae) e pastores dos anéis de Saturno (Pan, Atlas, Prometeu, Pandora).',
+    s6h:'CORPOS CRIÁVEIS',
+    s6p1:'Além dos planetas do Sistema Solar, você pode criar qualquer tipo de corpo celeste usando o botão <strong>CRIAR</strong>. Cada tipo tem propriedades físicas realistas e interage gravitacionalmente com todos os outros.',
   },
   es:{
     s1h:'QUÉ ES UNIVERSIM',
@@ -2285,8 +2388,9 @@ const _CS={
     k4:'Seleccionar cuerpo — abre panel de info y edición',k5:'Doble clic — enfocar y seguir cuerpo',
     k6:'Vuelo Libre — ratón apunta, WASD mueve, Q/E altura, SHIFT 5× velocidad',
     t1:'Pausar / reanudar simulación',t2:'Reiniciar Sistema Solar completo',
-    t3:'Rastros orbitales',t4:'Nombres de cuerpos',t5:'Malla de curvatura espacio-tiempo',
-    t6:'Multiplicador de tiempo: 0× a 300×',t7:'Crear cuerpo nuevo',t8:'Transformar estrella seleccionada',
+    t3:'Rastros orbitales',t4:'Nombres de cuerpos — etiquetas sobre cada cuerpo',
+    t5:'Malla de curvatura espacio-tiempo',t6:'Multiplicador de tiempo: 0× a 300×',
+    t7:'Crear cuerpo nuevo',t8:'Transformar estrella seleccionada',
     s3h:'DATOS DE PLANETAS DEL SISTEMA SOLAR',
     pn0:'MERCURIO',pn1:'VENUS',pn2:'TIERRA',pn3:'MARTE',pn4:'JÚPITER',pn5:'SATURNO',pn6:'URANO',pn7:'NEPTUNO',pn8:'PLUTÓN',pn9:'SOL',
     lm:'Masa',lo:'Período orbital',lr:'Rotación sideral',lt:'Temp. media',ld:'Dist. media Sol',le:'Excentricidad',lri:'Radio ecuatorial',la:'Inc. axial',ll:'Lunas',
@@ -2302,6 +2406,7 @@ const _CS={
     s6h:'CUERPOS CREABLES',s6p1:'Además de los planetas, puedes crear cualquier tipo de cuerpo celeste con el botón <strong>CREAR</strong>.',
   }
 };
+
 function _applyCS(l){
   const T=_CS[l]||_CS.en;
   document.querySelectorAll('[data-cs]').forEach(el=>{
@@ -2309,8 +2414,15 @@ function _applyCS(l){
     if(T[k]!==undefined)el.innerHTML=T[k];
   });
 }
+
+// Extend the main setLang (defined in the module script) to also update the content section
 const _origSL=window.setLang;
-window.setLang=function(l){if(_origSL)_origSL(l);_applyCS(l);};
+window.setLang=function(l){
+  if(_origSL)_origSL(l);
+  _applyCS(l);
+};
+
+// On page load, apply saved/detected language to content section
 window.addEventListener('DOMContentLoaded',function(){
   try{
     const saved=localStorage.getItem('usim_lang');
